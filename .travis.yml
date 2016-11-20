@@ -1,10 +1,15 @@
 language: java
 
-install: mvn install -e -X -DskipTests=true -Dgpg.skip=true -Dmaven.javadoc.skip=true
-
 jdk:
   - openjdk7
   - oraclejdk8
 
+before_install:
+  # override default MAVEN_OPTS
+  - echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:MaxPermSize=512m'" > ~/.mavenrc
+
+install: mvn install -B -DskipTests=true -Dgpg.skip=true -Dmaven.javadoc.skip=true
+
+script: mvn test -B -e -X
 
 
