@@ -39,6 +39,8 @@ public abstract class AbstractJbpmTestCase extends TestCase {
 
   protected void tearDown() throws Exception {
     log.info("### END " + getName() + " ####################");
+    // try to force GC to try run on travis
+    System.gc();
   }
 
   protected String getShortName() {
