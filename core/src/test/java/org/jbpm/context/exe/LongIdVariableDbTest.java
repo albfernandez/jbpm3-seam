@@ -47,6 +47,7 @@ public class LongIdVariableDbTest extends AbstractDbTestCase {
 
         JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration);
         jbpmSchema.createTable("JBPM_TEST_CUSTOMLONGID");
+        jbpmSchema.createTable("JBPM_PROCESSDEFINITION");
       }
       finally {
         jbpmContext.close();

@@ -524,7 +524,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>${surefire.jvm.args}</argLine>
-
+		  <reuseForks>false</reuseForks>
           <systemProperties>
             <property>
               <name>log4j.output.dir</name>

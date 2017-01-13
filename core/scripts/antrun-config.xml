@@ -79,19 +79,21 @@
           todir="${project.test.output.dir}/org/jbpm/graph/node" />
     <replace file="${project.test.output.dir}/org/jbpm/graph/node/hibernate.cfg.xml"
              token="Join.hbm.xml" value="Join.lock.hbm.xml" />
-    <comment-out file="${project.test.output.dir}/org/jbpm/graph/node/hibernate.cfg.xml"
-                 section="Automatic schema creation" />
+    <!--comment-out file="${project.test.output.dir}/org/jbpm/graph/node/hibernate.cfg.xml"
+                 section="Automatic schema creation" /-->
 
     <copy file="${project.output.dir}/hibernate.cfg.xml"
           todir="${project.test.output.dir}/org/jbpm/jbpm2908" />
-    <comment-out file="${project.test.output.dir}/org/jbpm/jbpm2908/hibernate.cfg.xml"
-                 section="Automatic schema creation" />
+    <!--comment-out file="${project.test.output.dir}/org/jbpm/jbpm2908/hibernate-nocreate.cfg.xml"
+                 section="Automatic schema creation" /-->
 
     <copy file="${project.output.dir}/hibernate.cfg.xml"
           todir="${project.test.output.dir}/org/jbpm/jbpm2958" />
-    <replace file="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate.cfg.xml"
-             token="Timer.hbm.xml" value="Timer.calendar.hbm.xml" />
-    <comment-out file="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate.cfg.xml"
+  	<replace file="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate.cfg.xml"
+  	             token="Timer.hbm.xml" value="Timer.calendar.hbm.xml" />
+    <copy file="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate.cfg.xml"
+  		tofile="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate-nocreate.cfg.xml" />
+    <comment-out file="${project.test.output.dir}/org/jbpm/jbpm2958/hibernate-nocreate.cfg.xml"
                  section="Automatic schema creation" />
 
     <copy file="${project.output.dir}/hibernate.cfg.xml"
@@ -104,8 +106,8 @@
           <mapping resource="org/jbpm/context/exe/CustomStringClass.hbm.xml"/>
           ]]></replacevalue>
     </replace>
-    <comment-out file="${project.test.output.dir}/org/jbpm/context/exe/hibernate.cfg.xml"
-                 section="Automatic schema creation" />
+    <!--comment-out file="${project.test.output.dir}/org/jbpm/context/exe/hibernate.cfg.xml"
+                 section="Automatic schema creation" /-->
 
 
   </target>

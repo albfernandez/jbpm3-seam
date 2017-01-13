@@ -60,10 +60,18 @@ import org.jbpm.svc.Services;
  * @author Alejandro Guizar
  */
 public class TimerCalendarTest extends AbstractDbTestCase {
+	
+
+	private boolean createTables = true;
 
   protected JbpmConfiguration getJbpmConfiguration() {
     if (jbpmConfiguration == null) {
-      jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm.cfg.xml");
+    	if (createTables) {
+    		jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm.cfg.xml");
+    	}
+    	else {
+    		jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm-nocreate.cfg.xml");
+    	}
 
       JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
       try {
@@ -124,6 +132,7 @@ public class TimerCalendarTest extends AbstractDbTestCase {
       }
     }
     finally {
+    	createTables = false;
       createJbpmContext();
     }
 
