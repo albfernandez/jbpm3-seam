@@ -10,12 +10,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - JEE5 Enterprise</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jbpm-enterprise-jee5</artifactId>
   <packaging>ejb</packaging>
 
   <parent>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
     <version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</version>
   </parent>
@@ -61,7 +61,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <version>${project.version}</version>
     </dependency>

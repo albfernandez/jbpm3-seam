@@ -10,13 +10,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - Distribution</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jbpm-distribution</artifactId>
   <packaging>pom</packaging>
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
     <version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</version>
   </parent>
@@ -32,120 +32,120 @@
   <dependencies>
     <!-- jBPM dependencies -->
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-db</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise-jee5</artifactId>
       <version>${project.version}</version>
       <type>ejb</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise-jee5</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise</artifactId>
       <version>${project.version}</version>
       <type>ejb</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-examples</artifactId>
       <classifier>examples</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl-designer-site</artifactId>
       <type>zip</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-tomcat</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-userguide</artifactId>
       <version>${project.version}</version>
       <type>jdocbook</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jsf-console</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jsf-console-jee5</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jsf-console-tomcat</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>gpd-deployer</artifactId>
       <type>war</type>
     </dependency>
 
     <!-- Sources -->
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise-jee5</artifactId>
       <classifier>sources</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise</artifactId>
       <classifier>sources</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <classifier>sources</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <classifier>sources</classifier>
       <version>${project.version}</version>
@@ -153,25 +153,25 @@
 
     <!-- Javadoc -->
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise-jee5</artifactId>
       <classifier>javadoc</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-enterprise</artifactId>
       <classifier>javadoc</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <classifier>javadoc</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <classifier>javadoc</classifier>
       <version>${project.version}</version>

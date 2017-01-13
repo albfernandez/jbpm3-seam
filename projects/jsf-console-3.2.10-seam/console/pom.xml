@@ -10,13 +10,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - Console</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jsf-console</artifactId>
   <packaging>war</packaging>
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <artifactId>jsf-console-parent</artifactId>
     <version>3.2.10-1-seam2_hibernate5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
@@ -26,7 +26,7 @@
   <dependencies>
     <!-- Compile Dependencies -->
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jsf-console-jbpm4jsf</artifactId>
       <version>${project.version}</version>
     </dependency>

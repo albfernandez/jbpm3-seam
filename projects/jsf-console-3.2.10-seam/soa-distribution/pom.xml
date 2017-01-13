@@ -11,13 +11,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - SOA Console</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jsf-console-soa-distribution</artifactId>
   <packaging>pom</packaging>
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <artifactId>jsf-console-parent</artifactId>
     <version>3.2.10-1-seam2_hibernate5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
@@ -37,13 +37,13 @@
       <type>zip</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jsf-console</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>gpd-deployer</artifactId>
       <version>${project.version}</version>
       <type>war</type>
@@ -85,7 +85,7 @@
                <outputDirectory>${project.build.directory}/work/console-war</outputDirectory>
                <artifactItems>
                  <artifactItem>
-                   <groupId>org.jbpm.jbpm3</groupId>
+                   <groupId>com.github.albfernandez</groupId>
                    <artifactId>jsf-console</artifactId>
                    <type>war</type>
                  </artifactItem>
@@ -102,7 +102,7 @@
                <outputDirectory>${project.build.directory}/work/gpd-war</outputDirectory>
                <artifactItems>
                  <artifactItem>
-                   <groupId>org.jbpm.jbpm3</groupId>
+                   <groupId>com.github.albfernandez</groupId>
                    <artifactId>gpd-deployer</artifactId>
                    <type>war</type>
                  </artifactItem>

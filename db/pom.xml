@@ -10,13 +10,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - Database</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jbpm-db</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
     <version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
@@ -31,23 +31,23 @@
   <dependencies>
     <!-- jBPM Dependencies -->
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-jpdl</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm.jbpm3</groupId>
+      <groupId>com.github.albfernandez</groupId>
       <artifactId>jbpm-identity</artifactId>
       <classifier>config</classifier>
       <version>${project.version}</version>
@@ -139,7 +139,7 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.jbpm.jbpm3</groupId>
+                  <groupId>com.github.albfernandez</groupId>
                   <artifactId>jbpm-db</artifactId>
                   <version>${previous.version}</version>
                 </artifactItem>

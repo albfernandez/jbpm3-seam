@@ -11,13 +11,13 @@
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <name>jBPM3 - Example: @example.name@</name>
-  <groupId>org.jbpm.jbpm3</groupId>
+  <groupId>com.github.albfernandez</groupId>
   <artifactId>jbpm-example-@example.name@</artifactId>
   <packaging>jar</packaging>
 
   <parent>
     <artifactId>jbpm-examples-dist</artifactId>
-    <groupId>org.jbpm.jbpm3</groupId>
+    <groupId>com.github.albfernandez</groupId>
     <version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</version>
   </parent>
 
