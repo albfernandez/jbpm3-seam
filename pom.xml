@@ -17,17 +17,16 @@
 
   <!-- Source Control Management -->
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbpm/jbpm3/tags/jbpm-3.2.10</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbpm/jbpm3/tags/jbpm-3.2.10</developerConnection>
-    <url>http://fisheye.jboss.org/browse/jbpm/jbpm3/tags/jbpm-3.2.10</url>
+    <connection>scm:git:git@github.com:albfernandez/jbpm3-seam.git</connection>
+    <developerConnection>scm:git:git@github.com:albfernandez/jbpm3-seam.git</developerConnection>
+    <url>https://github.com/albfernandez/jbpm3-seam</url>
   </scm>
+  	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/albfernandez/jbpm3-seam/issues</url>
+	</issueManagement>
 
-  <!-- Parent -->
-  <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>5</version>
-  </parent>
+
 
   <!-- Modules -->
   <modules>
