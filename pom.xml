@@ -13,8 +13,23 @@
   <groupId>com.github.albfernandez</groupId>
   <artifactId>jbpm</artifactId>
   <packaging>pom</packaging>
-  <version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</version>
-
+  <version>3.2.10-1-SP3_seam2_hibernate5</version>
+  <description>The JBoss Business Process Manager (jBPM) is a flexible and extensible scaffolding for process languages</description>
+  <url>https://github.com/albfernandez/jbpm3-seam</url>
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE, version 3 (LGPL-3.0)</name>
+			<url>http://www.gnu.org/licenses/lgpl.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Alberto Fernández</name>
+			<email>infjaf@gmail.com</email>
+			<organization>Alberto Fernández</organization>
+			<organizationUrl>https://github.com/albfernandez/</organizationUrl>
+		</developer>
+	</developers>
   <!-- Source Control Management -->
   <scm>
     <connection>scm:git:git@github.com:albfernandez/jbpm3-seam.git</connection>

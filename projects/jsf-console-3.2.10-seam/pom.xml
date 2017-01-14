@@ -44,7 +44,7 @@
     <maven.compiler.source>1.7</maven.compiler.source>
 
     <!-- Dependency versions -->
-    <jbpm.version>3.2.10-1-SP3_seam2_hibernate5-SNAPSHOT</jbpm.version>
+    <jbpm.version>3.2.10-1-SP3_seam2_hibernate5</jbpm.version>
   </properties>
 
   <!-- DependencyManagement -->
