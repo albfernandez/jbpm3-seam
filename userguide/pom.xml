@@ -18,7 +18,7 @@
   <parent>
     <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
-    <version>3.2.10-2-SP3_seam2_hibernate5-SNAPSHOT</version>
+    <version>3.2.11.ayg</version>
   </parent>
 
   <!-- Plugins -->

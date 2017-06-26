@@ -7,7 +7,7 @@
   <parent>
     <artifactId>jbpm</artifactId>
     <groupId>com.github.albfernandez</groupId>
-    <version>3.2.10-2-SP3_seam2_hibernate5-SNAPSHOT</version>
+    <version>3.2.11.ayg</version>
   </parent>
 
   <properties>
