@@ -12,9 +12,9 @@ import org.jbpm.jpdl.xml.JpdlXmlReader;
  * 
  * To execute a script during a simulation run, you have to configure either
  * the attribute <b>simulation</b> with the value 'execute' or to add a 
- * <simulation-expression> element.
+ * &lt;simulation-expression&gt; element.
  * 
- *  Another way is to define not a <script>, but a <simulation-script>, which is only
+ *  Another way is to define not a &lt;script&gt;, but a &lt;simulation-script&gt;, which is only
  *  executed in simulation runs
  * 
  * @author bernd.ruecker@camunda.com
