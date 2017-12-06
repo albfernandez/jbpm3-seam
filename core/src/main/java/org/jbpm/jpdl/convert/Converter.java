@@ -21,12 +21,13 @@
  */
 package org.jbpm.jpdl.convert;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -136,21 +137,21 @@ public class Converter {
   }
 
   void convertPars() throws Exception {
-    String[] files = indir.list(new FilenameFilter() {
+    File[] files = indir.listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.toLowerCase().endsWith(".par");
       }
     });
 
-    for (int i = 0; i < files.length; i++) {
-      ZipInputStream zip = new ZipInputStream(new FileInputStream(indir.getPath() + "/"
-        + files[i]));
+    for (File inputFile: files) {
+    	
+      ZipInputStream zip = new ZipInputStream(new BufferedInputStream(Files.newInputStream(inputFile.toPath())));
       ProcessArchive pa = new ProcessArchive(zip);
       String xml = convertPar(pa);
 
       // Create new process archive in designated output directory
-      ZipOutputStream zippo = new ZipOutputStream(new FileOutputStream(outdir.getPath() + "/"
-        + files[i]));
+      File outputFile = new File(outdir, inputFile.getName());
+      ZipOutputStream zippo = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(outputFile.toPath())));
 
       // Copy all non-pdl entries and insert new pdl
       for (Iterator iter = pa.getEntries().keySet().iterator(); iter.hasNext();) {
@@ -168,7 +169,7 @@ public class Converter {
       }
 
       zippo.close();
-      System.out.println("Converted " + files[i]);
+      System.out.println("Converted " + inputFile.getName());
     } // process next PAR
   }
 

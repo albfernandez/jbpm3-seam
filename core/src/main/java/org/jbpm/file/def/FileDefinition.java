@@ -21,13 +21,14 @@
  */
 package org.jbpm.file.def;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +36,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.JbpmException;
 import org.jbpm.bytes.ByteArray;
@@ -82,9 +82,7 @@ public class FileDefinition extends ModuleDefinition {
     File filePath = getFilePath(name);
     log.trace("storing '" + name + "' to file '" + filePath + "'");
 
-    FileOutputStream fos = new FileOutputStream(filePath);
-    fos.write(bytes);
-    fos.close();
+    Files.write(filePath.toPath(), bytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
   }
 
   private void storeFileInDb(String name, byte[] bytes) {
@@ -117,9 +115,8 @@ public class FileDefinition extends ModuleDefinition {
     File filePath = getFilePath(name);
     log.trace("storing '" + name + "' to file '" + filePath + "'");
 
-    FileOutputStream fos = new FileOutputStream(filePath);
-    IoUtil.transfer(is, fos);
-    fos.close();
+    Files.copy(is, filePath.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    
   }
 
   private void storeFileInDb(String name, InputStream is) throws IOException {
@@ -182,9 +179,9 @@ public class FileDefinition extends ModuleDefinition {
       if (log.isDebugEnabled()) {
         log.debug("loading '" + name + "' from file '" + filePath + "'");
       }
-      return filePath.canRead() ? new FileInputStream(filePath) : null;
+      return filePath.canRead() ? new BufferedInputStream(Files.newInputStream(filePath.toPath())) : null;
     }
-    catch (FileNotFoundException e) {
+    catch (IOException e) {
       return null;
     }
   }

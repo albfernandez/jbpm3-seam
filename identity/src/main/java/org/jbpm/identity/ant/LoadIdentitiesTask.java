@@ -21,9 +21,11 @@
  */
 package org.jbpm.identity.ant;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -47,14 +49,24 @@ public class LoadIdentitiesTask extends Task {
     if (file == null) throw new BuildException("no file specified in the loadidentities task");
 
     log("loading identities from " + file + " ...");
-    FileInputStream fileInputStream;
+    InputStream inputStream = null;
+    Entity[] entities = null;
     try {
-      fileInputStream = new FileInputStream(file);
+      inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()));
+      entities = IdentityXmlParser.parseEntitiesResource(inputStream);      
     }
-    catch (FileNotFoundException e) {
-      throw new BuildException("identities file '" + file + "' not found");
+    catch (IOException e) {
+      throw new BuildException("identities file '" + file + "' not found", e);
     }
-    Entity[] entities = IdentityXmlParser.parseEntitiesResource(fileInputStream);
+    finally {
+    	if (inputStream != null) {
+    		try {
+				inputStream.close();
+			} catch (IOException e) {
+				// 
+			}
+    	}
+    }
 
     JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
     try {

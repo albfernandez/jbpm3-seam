@@ -22,7 +22,6 @@
 package org.jbpm.ant;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -96,12 +95,15 @@ public class DeployProcessTask extends MatchingTask {
 
   private ProcessDefinition parseProcessArchive(File processFile) throws IOException {
     log("parsing process archive " + processFile);
-    ZipInputStream processStream = new ZipInputStream(new FileInputStream(processFile));
+    ZipInputStream processStream = null;
     try {
+      processStream = new ZipInputStream(new java.io.BufferedInputStream(java.nio.file.Files.newInputStream(processFile.toPath())));
       return ProcessDefinition.parseParZipInputStream(processStream);
     }
     finally {
-      processStream.close();
+    	if (processStream != null) {
+    		processStream.close();
+    	}
     }
   }
 

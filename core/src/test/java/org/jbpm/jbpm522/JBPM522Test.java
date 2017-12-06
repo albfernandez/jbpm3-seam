@@ -21,24 +21,24 @@
  */
 package org.jbpm.jbpm522;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
+
+import org.apache.tools.ant.Main;
+import org.jbpm.db.AbstractDbTestCase;
+import org.jbpm.graph.def.ProcessDefinition;
+import org.jbpm.util.IoUtil;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.tools.ant.Main;
-
-import org.jbpm.db.AbstractDbTestCase;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.util.IoUtil;
 
 /**
  * Failed attempts to deploy a process leave a process definition record
@@ -67,7 +67,7 @@ public class JBPM522Test extends AbstractDbTestCase {
           try {
             temporaryBuildFile = File.createTempFile("build", ".xml");
 
-            OutputStream temporaryFileStream = new FileOutputStream(temporaryBuildFile);
+            OutputStream temporaryFileStream = new BufferedOutputStream(Files.newOutputStream(temporaryBuildFile.toPath()));
             try {
               IoUtil.transfer(buildFileStream, temporaryFileStream);
             }

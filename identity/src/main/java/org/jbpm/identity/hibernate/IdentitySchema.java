@@ -22,15 +22,10 @@
 package org.jbpm.identity.hibernate;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,14 +33,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.spi.MetadataImplementor;
-import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.jdbc.Work;
-import org.hibernate.mapping.Table;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.jbpm.JbpmException;
-import org.jbpm.db.JbpmSchema;
 import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 import org.jbpm.logging.db.JDBCExceptionReporter;
 
@@ -84,17 +76,9 @@ public class IdentitySchema {
     return Dialect.getDialect(jbpmHibernateConfiguration.getConfigurationProxy().getProperties());
   }
 
-  private String getDefaultCatalog() {
-    return jbpmHibernateConfiguration.getConfigurationProxy().getProperty(Environment.DEFAULT_CATALOG);
-  }
 
-  private String getDefaultSchema() {
-    return jbpmHibernateConfiguration.getConfigurationProxy().getProperty(Environment.DEFAULT_SCHEMA);
-  }
 
-  private boolean getShowSql() {
-    return "true".equalsIgnoreCase(jbpmHibernateConfiguration.getConfigurationProxy().getProperty(Environment.SHOW_SQL));
-  }
+
 
   public void setDelimiter(String delimiter) {
     this.delimiter = delimiter;
@@ -273,27 +257,7 @@ public class IdentitySchema {
     System.err.println("IdentitySchema scripts <dir> <prefix>");
   }
 
-  private void saveSqlScript(String fileName, String[] sql) throws FileNotFoundException {
-    FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-    PrintStream printStream = new PrintStream(fileOutputStream);
-    for (int i = 0; i < sql.length; i++) {
-      printStream.println(sql[i] + getSqlDelimiter());
-    }
-  }
 
-  // sql delimiter ////////////////////////////////////////////////////////////
-
-  private static String sqlDelimiter;
-
-  private synchronized String getSqlDelimiter() {
-
-    configure();
-
-    if (sqlDelimiter == null) {
-      sqlDelimiter = jbpmHibernateConfiguration.getConfigurationProxy().getProperties().getProperty("jbpm.sql.delimiter", ";");
-    }
-    return sqlDelimiter;
-  }
 
   // getters and setters
 

@@ -21,10 +21,12 @@
  */
 package org.jbpm.db;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -560,7 +562,7 @@ public class JbpmSchema {
       if (index + 1 < args.length) {
         String hibernateProperties = args[index + 1];
         try {
-          InputStream fileSource = new FileInputStream(hibernateProperties);
+          InputStream fileSource = new BufferedInputStream(Files.newInputStream(Paths.get(hibernateProperties)));
           Properties properties = new Properties();
           properties.load(fileSource);
           fileSource.close();

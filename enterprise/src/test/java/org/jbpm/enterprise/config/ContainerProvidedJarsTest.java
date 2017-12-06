@@ -23,17 +23,16 @@ package org.jbpm.enterprise.config;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.management.ObjectName;
 
-import junit.framework.TestCase;
-
 import org.jbpm.enterprise.IntegrationTestHelper;
 import org.jbpm.enterprise.ObjectNameFactory;
+
+import junit.framework.TestCase;
 
 /**
  * Test that there are jars deployed which should in fact be provided by the container
@@ -58,11 +57,11 @@ public class ContainerProvidedJarsTest extends TestCase {
     File jbpmDir = new File(serverHomeDir + "/deploy/jbpm");
     assertTrue("jBPM dir exists: " + jbpmDir, jbpmDir.exists());
 
-    List deployedJars = getDeployedJars(jbpmDir);
+    List<String> deployedJars = getDeployedJars(jbpmDir);
 
     // Iterate over the known server provided jars
-    List matchingJars = new ArrayList();
-    BufferedReader br = new BufferedReader(new FileReader(jbossJars));
+    List<String> matchingJars = new ArrayList<String>();
+    BufferedReader br = Files.newBufferedReader(jbossJars.toPath());
     String jbossJar = br.readLine();
     while (jbossJar != null) {
       if (jbossJar.length() == 0 || jbossJar.startsWith("#")) {
@@ -70,18 +69,20 @@ public class ContainerProvidedJarsTest extends TestCase {
         continue;
       }
 
-      for (Iterator i = deployedJars.iterator(); i.hasNext();) {
-        String deployedJar = (String) i.next();
-        if (deployedJar.startsWith(jbossJar)) matchingJars.add(deployedJar);
+      for (String deployedJar: deployedJars) {
+        if (deployedJar.startsWith(jbossJar)) {
+        	matchingJars.add(deployedJar);
+        }
       }
       jbossJar = br.readLine();
     }
+    br.close();
 
     assertEquals("Invalid deployed jars: " + matchingJars, 0, matchingJars.size());
   }
 
-  private List getDeployedJars(File subdir) {
-    List deployedJars = new ArrayList();
+  private List<String> getDeployedJars(File subdir) {
+    List<String> deployedJars = new ArrayList<String>();
     File[] files = subdir.listFiles();
     for (int i = 0; i < files.length; i++) {
       File file = files[i];
