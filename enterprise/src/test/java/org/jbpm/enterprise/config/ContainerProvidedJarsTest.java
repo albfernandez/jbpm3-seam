@@ -23,6 +23,7 @@ package org.jbpm.enterprise.config;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ContainerProvidedJarsTest extends TestCase {
 
     // Iterate over the known server provided jars
     List<String> matchingJars = new ArrayList<String>();
-    BufferedReader br = Files.newBufferedReader(jbossJars.toPath());
+    BufferedReader br = Files.newBufferedReader(jbossJars.toPath(), StandardCharsets.UTF_8);
     String jbossJar = br.readLine();
     while (jbossJar != null) {
       if (jbossJar.length() == 0 || jbossJar.startsWith("#")) {
