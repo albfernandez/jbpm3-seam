@@ -7,7 +7,7 @@
   <parent>
     <artifactId>jbpm</artifactId>
     <groupId>com.github.albfernandez</groupId>
-    <version>3.2.12.ayg</version>
+    <version>3.2.13-SNAPSHOT</version>
   </parent>
 
   <properties>
