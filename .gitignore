@@ -3,4 +3,6 @@
 */.project
 .project
 */.classpath
+.classpath
 target
+/.externalToolBuilders/
