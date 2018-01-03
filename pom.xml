@@ -547,6 +547,9 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
+						<manifestEntries>
+							<Automatic-Module-Name>${groupId}.${artifactId}</Automatic-Module-Name>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
