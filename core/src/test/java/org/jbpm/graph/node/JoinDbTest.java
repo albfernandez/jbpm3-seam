@@ -65,7 +65,7 @@ public class JoinDbTest extends AbstractDbTestCase {
     ProcessDefinition processDefinition = ProcessDefinition.parseXmlString("<process-definition name='lock mode'>"
       + "  <join name='read' lock='READ' />"
       + "  <join name='nowait' lock='UPGRADE_NOWAIT' />"
-      + "  <join name='upgrade' lock='UPGRADE' />"
+      + "  <join name='upgrade' lock='PESSIMISTIC_WRITE' />"
       + "</process-definition>");
     deployProcessDefinition(processDefinition);
 
