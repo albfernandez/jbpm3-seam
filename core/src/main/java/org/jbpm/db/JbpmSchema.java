@@ -495,7 +495,7 @@ public class JbpmSchema {
 
       SQLWarning warning = statement.getWarnings();
       if (warning != null) {
-        JDBCExceptionReporter.logWarnings(warning);
+        JDBCExceptionReporter.walkWarnings( warning, JDBCExceptionReporter.STANDARD_WARNING_HANDLER );
         statement.clearWarnings();
       }
     } catch (SQLException e) {
