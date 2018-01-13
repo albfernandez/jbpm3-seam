@@ -35,7 +35,6 @@ import org.jbpm.taskmgmt.def.TaskMgmtDefinition;
  */
 public class SimulationJpdlXmlReader extends JpdlXmlReader {
 
-  private static final long serialVersionUID = 1L;
   
   public SimulationJpdlXmlReader(String processXml) {
     this(new InputSource(new StringReader(processXml)));    

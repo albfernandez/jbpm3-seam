@@ -89,7 +89,7 @@ public class Join extends Node {
       if (lockMode != null)
         parentLockMode = lockMode.toString();
       else if ("pessimistic".equals(lock))
-        parentLockMode = LockMode.UPGRADE.toString();
+        parentLockMode = LockMode.PESSIMISTIC_WRITE.toString();
       else
         jpdlReader.addError("invalid parent lock mode '" + lock + "'");
     }

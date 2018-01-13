@@ -352,7 +352,7 @@ public class GraphSession {
    */
   public void lockProcessInstance(long processInstanceId) {
     try {
-      session.load(ProcessInstance.class, new Long(processInstanceId), LockMode.UPGRADE);
+      session.load(ProcessInstance.class, new Long(processInstanceId), LockMode.PESSIMISTIC_WRITE);
     }
     catch (HibernateException e) {
       handle(e);
@@ -366,7 +366,7 @@ public class GraphSession {
    */
   public void lockProcessInstance(ProcessInstance processInstance) {
     try {
-      session.lock(processInstance, LockMode.UPGRADE);
+      session.lock(processInstance, LockMode.PESSIMISTIC_WRITE);
     }
     catch (HibernateException e) {
       handle(e);

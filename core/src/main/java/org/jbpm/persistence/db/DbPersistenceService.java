@@ -170,7 +170,7 @@ public class DbPersistenceService implements PersistenceService {
            * application should not close the connection.
            */
           SessionFactoryImplementor sessionFactory = (SessionFactoryImplementor) session.getSessionFactory();
-          ConnectionReleaseMode releaseMode = sessionFactory.getSettings()
+          ConnectionReleaseMode releaseMode = sessionFactory.getSessionFactoryOptions()
             .getConnectionReleaseMode();
           mustConnectionBeClosed = releaseMode == ConnectionReleaseMode.AFTER_STATEMENT;
 

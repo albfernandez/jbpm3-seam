@@ -244,7 +244,7 @@ public class JbpmConfiguration implements Serializable {
 
   private final ObjectFactory objectFactory;
   private final String resourceName;
-  private transient final ThreadLocal threadLocalContextStack = new ThreadLocal();
+  private transient final ThreadLocal<List<JbpmContext>> threadLocalContextStack = new ThreadLocal<>();
   private JobExecutor jobExecutor;
   private volatile boolean isClosed;
 
@@ -530,7 +530,7 @@ public class JbpmConfiguration implements Serializable {
       }
 
       // close remaining contexts
-      List contextStack = (List) threadLocalContextStack.get();
+      List<JbpmContext> contextStack =  threadLocalContextStack.get();
       if (contextStack != null && !contextStack.isEmpty()) {
         log.warn("closing "
           + contextStack.size()
@@ -549,7 +549,7 @@ public class JbpmConfiguration implements Serializable {
       try {
         Map serviceFactories = jbpmContext.getServices().getServiceFactories();
         if (serviceFactories != null) {
-          for (Iterator i = serviceFactories.values().iterator(); i.hasNext();) {
+          for (Iterator<ServiceFactory> i = serviceFactories.values().iterator(); i.hasNext();) {
             ServiceFactory serviceFactory = (ServiceFactory) i.next();
             serviceFactory.close();
           }

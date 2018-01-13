@@ -39,7 +39,6 @@ import org.xml.sax.InputSource;
  */
 public class ExperimentReader implements ProblemListener {
   
-  private static final long serialVersionUID = 1L;
   private static Log log = LogFactory.getLog(ExperimentReader.class);
 
   private InputSource inputSource = null;

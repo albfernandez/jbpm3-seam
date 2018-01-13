@@ -75,6 +75,6 @@ public class JoinDbTest extends AbstractDbTestCase {
     join = (Join) processDefinition.getNode("nowait");
     assertEquals(LockMode.UPGRADE_NOWAIT.toString(), join.getParentLockMode());
     join = (Join) processDefinition.getNode("upgrade");
-    assertEquals(LockMode.UPGRADE.toString(), join.getParentLockMode());
+    assertEquals(LockMode.PESSIMISTIC_WRITE.toString(), join.getParentLockMode());
   }
 }

@@ -36,11 +36,11 @@ public class JBPM1755Test extends AbstractDbTestCase {
   }
 
   public void testUpgradeLock() {
-    launchProcessInstances(LockMode.UPGRADE);
+    launchProcessInstances(LockMode.PESSIMISTIC_WRITE);
   }
 
   public void testForceLock() {
-    launchProcessInstances(LockMode.FORCE);
+    launchProcessInstances(LockMode.PESSIMISTIC_FORCE_INCREMENT);
   }
 
   private void launchProcessInstances(LockMode lockMode) {

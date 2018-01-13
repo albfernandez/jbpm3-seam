@@ -59,6 +59,7 @@ import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 public class MockSessionFactory implements SessionFactoryImplementor {
 
     private Settings settings;
+    private SessionFactoryOptions SessionFactoryOptions = null;
     private boolean failOnFlush;
     private boolean failOnClose;
     private boolean isClosed;
@@ -69,10 +70,9 @@ public class MockSessionFactory implements SessionFactoryImplementor {
         JbpmHibernateConfiguration jbpmHibernateConfiguration = new JbpmHibernateConfiguration();
 
         Configuration configuration = jbpmHibernateConfiguration.getConfigurationProxy();
-        SessionFactory sessionFactory = configuration.configure()
-                .buildSessionFactory();
-        this.settings = ((SessionFactoryImplementor) sessionFactory)
-                .getSettings();
+        SessionFactory sessionFactory = configuration.configure().buildSessionFactory();
+        this.settings = ((SessionFactoryImplementor) sessionFactory).getSettings();
+        this.SessionFactoryOptions = sessionFactory.getSessionFactoryOptions();
     }
 
     public void setFailOnFlush(boolean fail) {
@@ -280,6 +280,7 @@ public class MockSessionFactory implements SessionFactoryImplementor {
     }
 
     @Override
+    @Deprecated
     public Settings getSettings() {
         return settings;
     }
@@ -328,7 +329,7 @@ public class MockSessionFactory implements SessionFactoryImplementor {
 
     @Override
     public SessionFactoryOptions getSessionFactoryOptions() {
-        throw new UnsupportedOperationException();
+        return this.SessionFactoryOptions;
     }
 
     @Override
