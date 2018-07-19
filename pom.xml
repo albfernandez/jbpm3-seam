@@ -93,7 +93,7 @@
 		<jconnect.version>6.0.5</jconnect.version>
 		<jtds.version>1.2.2</jtds.version>
 		<msjdbc.version>1.2.2828.100</msjdbc.version>
-		<mysql.connector.version>5.0.8</mysql.connector.version>
+		<mysql.connector.version>5.1.42</mysql.connector.version>
 		<ojdbc.version>10.2.0.4</ojdbc.version>
 		<postgresql.version>8.3-603.jdbc3</postgresql.version>
 
@@ -141,7 +141,7 @@
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
-				<version>1.7.0</version>
+				<version>1.7.1</version>
 			</dependency>
 			<dependency>
 				<groupId>backport-util-concurrent</groupId>
