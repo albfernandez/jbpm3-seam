@@ -125,7 +125,12 @@ public class ProcessArchiveClassLoadingDbTest extends AbstractDbTestCase {
       + "org/jbpm/jpdl/par/InstantiateClass.class";
     String instantiateClassTmpName = instantiateClassOriginalName + ".hiddenFromTestClasspath";
     assertTrue(new File(instantiateClassOriginalName).renameTo(new File(instantiateClassTmpName)));
-
+    try {
+    	Thread.sleep(5000);
+    }
+    catch (InterruptedException ignored) {
+    	//
+    }
     try {
       ClassLoader testClassLoader = ProcessArchiveClassLoadingDbTest.class.getClassLoader();
       try {
