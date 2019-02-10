@@ -14,7 +14,7 @@
 	<groupId>com.github.albfernandez</groupId>
 	<artifactId>jbpm</artifactId>
 	<packaging>pom</packaging>
-	<version>3.2.14.ayg</version>
+	<version>3.2.15-SNAPSHOT</version>
 	<description>The JBoss Business Process Manager (jBPM) is a flexible and extensible scaffolding for process languages</description>
 	<url>https://github.com/albfernandez/jbpm3-seam</url>
 	<licenses>
