@@ -93,7 +93,7 @@
 		<jconnect.version>6.0.5</jconnect.version>
 		<jtds.version>1.2.2</jtds.version>
 		<msjdbc.version>1.2.2828.100</msjdbc.version>
-		<mysql.connector.version>5.1.42</mysql.connector.version>
+		<mysql.connector.version>8.0.13</mysql.connector.version>
 		<ojdbc.version>10.2.0.4</ojdbc.version>
 		<postgresql.version>8.3-603.jdbc3</postgresql.version>
 
