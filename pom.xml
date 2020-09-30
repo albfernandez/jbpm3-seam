@@ -494,7 +494,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
-			<version>5.0.10.Final</version>
+			<version>5.3.18.Final</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
