@@ -673,7 +673,7 @@
 		<repository>
 			<id>jboss-public-repository-group</id>
 			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<url>https://repository.jboss.org/nexus/content/groups/public</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -689,7 +689,7 @@
 		<pluginRepository>
 			<id>jboss-public-repository-group</id>
 			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<url>https://repository.jboss.org/nexus/content/groups/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -806,7 +806,7 @@
 			<repositories>
 				<repository>
 					<id>qa.jboss.com</id>
-					<url>http://www.qa.jboss.com/jdbc-drivers/maven2</url>
+					<url>https://www.qa.jboss.com/jdbc-drivers/maven2</url>
 				</repository>
 			</repositories>
 			<dependencies>
@@ -860,7 +860,7 @@
 			<repositories>
 				<repository>
 					<id>qa.jboss.com</id>
-					<url>http://www.qa.jboss.com/jdbc-drivers/maven2</url>
+					<url>https://www.qa.jboss.com/jdbc-drivers/maven2</url>
 				</repository>
 			</repositories>
 			<dependencies>
@@ -909,7 +909,7 @@
 			<repositories>
 				<repository>
 					<id>qa.jboss.com</id>
-					<url>http://www.qa.jboss.com/jdbc-drivers/maven2</url>
+					<url>https://www.qa.jboss.com/jdbc-drivers/maven2</url>
 				</repository>
 			</repositories>
 		</profile>
@@ -956,7 +956,7 @@
 			<repositories>
 				<repository>
 					<id>qa.jboss.com</id>
-					<url>http://www.qa.jboss.com/jdbc-drivers/maven2</url>
+					<url>https://www.qa.jboss.com/jdbc-drivers/maven2</url>
 				</repository>
 			</repositories>
 		</profile>
