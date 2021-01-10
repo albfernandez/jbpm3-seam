@@ -23,6 +23,7 @@ package org.jbpm.calendar;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.jbpm.AbstractJbpmTestCase;
 
@@ -47,7 +48,7 @@ public class DayPartTest extends AbstractJbpmTestCase {
   }
 
   public void testDayPartAmPmParsing() {
-    DateFormat dateFormat = new SimpleDateFormat("hh'h'mma");
+    DateFormat dateFormat = new SimpleDateFormat("hh'h'mma", Locale.ENGLISH);
     DayPart dayPart = new DayPart("9h00am-12h15pm", dateFormat, null, 0);
     assertEquals(9, dayPart.startHour);
     assertEquals(0, dayPart.startMinute);
