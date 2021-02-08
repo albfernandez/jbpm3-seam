@@ -498,7 +498,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
-			<version>5.0.10.Final</version>
+			<version>5.4.24.Final</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -825,7 +825,7 @@
 				<jdbc.hsqldb.database>jbpm3</jdbc.hsqldb.database>
 				<jdbc.hsqldb.url>jdbc:hsqldb:mem:${jdbc.hsqldb.database}</jdbc.hsqldb.url>
 				<jdbc.hsqldb.username>sa</jdbc.hsqldb.username>
-				<jdbc.hsqldb.password />
+				<jdbc.hsqldb.password/>
 				<jdbc.hsqldb.driver>org.hsqldb.jdbc.JDBCDriver</jdbc.hsqldb.driver>
 			</properties>
 			<dependencies>
@@ -879,7 +879,7 @@
 				<jdbc.hsqldb.database>jbpm3</jdbc.hsqldb.database>
 				<jdbc.hsqldb.url>jdbc:hsqldb:mem:${jdbc.hsqldb.database}</jdbc.hsqldb.url>
 				<jdbc.hsqldb.username>sa</jdbc.hsqldb.username>
-				<jdbc.hsqldb.password />
+				<jdbc.hsqldb.password/>
 				<jdbc.hsqldb.driver>org.hsqldb.jdbc.JDBCDriver</jdbc.hsqldb.driver>
 			</properties>
 			<dependencies>
