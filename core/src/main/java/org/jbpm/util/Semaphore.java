@@ -106,12 +106,17 @@ public class Semaphore implements Serializable {
    * @see Thread#interrupt
    */
   public boolean tryAcquire(int permits, long timeout) throws InterruptedException {
-    if (permits < 0) throw new IllegalArgumentException(Integer.toString(permits));
+    if (permits < 0) {
+    	throw new IllegalArgumentException(Integer.toString(permits));
+    }
 
-    long startTime = System.currentTimeMillis();
+    long timeoutNano = timeout * 1000000L;
+    long startTimeNano = System.nanoTime();
     synchronized (this) {
       while (this.permits < permits) {
-        if (System.currentTimeMillis() - startTime >= timeout) return false;
+        if (System.nanoTime() - startTimeNano >= timeoutNano) {
+        	return false;
+        }
         wait(timeout);
       }
       this.permits -= permits;

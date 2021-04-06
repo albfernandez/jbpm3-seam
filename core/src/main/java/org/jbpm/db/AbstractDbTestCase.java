@@ -58,7 +58,7 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
 
   protected JobExecutor jobExecutor;
 
-  private List processDefinitionIds;
+  private List<Long> processDefinitionIds;
 
   private static final long JOB_TIMEOUT = 90 * 1000;
 
@@ -79,7 +79,9 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   }
 
   protected void tearDown() throws Exception {
-    if (processDefinitionIds != null) deleteProcessDefinitions();
+    if (processDefinitionIds != null) {
+    	deleteProcessDefinitions();
+    }
     closeJbpmContext();
     ensureCleanDatabase();
 
@@ -87,10 +89,10 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   }
 
   private void deleteProcessDefinitions() {
-    for (Iterator i = processDefinitionIds.iterator(); i.hasNext();) {
+    for (Iterator<Long> i = processDefinitionIds.iterator(); i.hasNext();) {
       newTransaction();
       try {
-        Long processDefinitionId = (Long) i.next();
+        Long processDefinitionId = i.next();
         graphSession.deleteProcessDefinition(processDefinitionId.longValue());
       }
       catch (RuntimeException e) {
@@ -218,9 +220,10 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
       }
 
       if (currentCount < previousCount) {
-        waitPeriod = currentCount * (currentTime - previousTime)
-          / (previousCount - currentCount);
-        if (waitPeriod < 500) waitPeriod = 500;
+        waitPeriod = currentCount * (currentTime - previousTime) / (previousCount - currentCount);
+        if (waitPeriod < 500) {
+        	waitPeriod = 500;
+        }
       }
       else {
         waitPeriod <<= 1;
@@ -231,7 +234,9 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
       }
       else {
         long remainingTime = timeout - elapsedTime;
-        if (waitPeriod > remainingTime) waitPeriod = remainingTime;
+        if (waitPeriod > remainingTime) {
+        	waitPeriod = remainingTime;
+        }
       }
 
       if (log.isDebugEnabled()) {
@@ -328,8 +333,10 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   private void registerForDeletion(ProcessDefinition processDefinition) {
     // start new transaction to avoid registering an uncommitted process definition
     newTransaction();
-    if (processDefinitionIds == null) processDefinitionIds = new ArrayList();
-    processDefinitionIds.add(new Long(processDefinition.getId()));
+    if (processDefinitionIds == null) {
+    	processDefinitionIds = new ArrayList<Long>();
+    }
+    processDefinitionIds.add(Long.valueOf(processDefinition.getId()));
   }
 
   protected void initializeMembers() {
