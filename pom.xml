@@ -97,7 +97,7 @@
 		<jconnect.version>6.0.5</jconnect.version>
 		<jtds.version>1.2.2</jtds.version>
 		<msjdbc.version>1.2.2828.100</msjdbc.version>
-		<mysql.connector.version>8.0.16</mysql.connector.version>
+		<mysql.connector.version>8.0.23</mysql.connector.version>
 		<ojdbc.version>10.2.0.4</ojdbc.version>
 		<postgresql.version>8.3-603.jdbc3</postgresql.version>
 
@@ -825,7 +825,7 @@
 				<jdbc.hsqldb.database>jbpm3</jdbc.hsqldb.database>
 				<jdbc.hsqldb.url>jdbc:hsqldb:mem:${jdbc.hsqldb.database}</jdbc.hsqldb.url>
 				<jdbc.hsqldb.username>sa</jdbc.hsqldb.username>
-				<jdbc.hsqldb.password />
+				<jdbc.hsqldb.password/>
 				<jdbc.hsqldb.driver>org.hsqldb.jdbc.JDBCDriver</jdbc.hsqldb.driver>
 			</properties>
 			<dependencies>
@@ -879,7 +879,7 @@
 				<jdbc.hsqldb.database>jbpm3</jdbc.hsqldb.database>
 				<jdbc.hsqldb.url>jdbc:hsqldb:mem:${jdbc.hsqldb.database}</jdbc.hsqldb.url>
 				<jdbc.hsqldb.username>sa</jdbc.hsqldb.username>
-				<jdbc.hsqldb.password />
+				<jdbc.hsqldb.password/>
 				<jdbc.hsqldb.driver>org.hsqldb.jdbc.JDBCDriver</jdbc.hsqldb.driver>
 			</properties>
 			<dependencies>
