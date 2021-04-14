@@ -118,7 +118,7 @@
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.6.1</version>
+        <version>1.7.30</version>
     </dependency>
     <dependency>
         <groupId>org.hibernate</groupId>
@@ -193,9 +193,9 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="database" value="${database}" />
-                <property name="project.output.dir" value="${project.build.outputDirectory}" />
-                <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-config" />
+                <property name="database" value="${database}"/>
+                <property name="project.output.dir" value="${project.build.outputDirectory}"/>
+                <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-config"/>
               </tasks>
             </configuration>
           </execution>
@@ -208,9 +208,9 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="project.output.dir" value="${project.build.outputDirectory}" />
-                <property name="project.test.output.dir" value="${project.build.testOutputDirectory}" />
-                <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-test-config" />
+                <property name="project.output.dir" value="${project.build.outputDirectory}"/>
+                <property name="project.test.output.dir" value="${project.build.testOutputDirectory}"/>
+                <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-test-config"/>
               </tasks>
             </configuration>
           </execution>
@@ -267,7 +267,7 @@
                                     </goals>
                                 </pluginExecutionFilter>
                                 <action>
-                                    <execute></execute>
+                                    <execute/>
                                 </action>
                             </pluginExecution>
                         </pluginExecutions>
