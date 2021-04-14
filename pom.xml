@@ -93,7 +93,7 @@
 
 		<!-- Database Driver Versions -->
 		<db2jcc.version>3.8.88</db2jcc.version>
-		<hsqldb.version>2.3.4</hsqldb.version>
+		<hsqldb.version>2.5.1</hsqldb.version>
 		<jconnect.version>6.0.5</jconnect.version>
 		<jtds.version>1.2.2</jtds.version>
 		<msjdbc.version>1.2.2828.100</msjdbc.version>
