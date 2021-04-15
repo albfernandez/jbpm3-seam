@@ -99,7 +99,7 @@
 		<msjdbc.version>1.2.2828.100</msjdbc.version>
 		<mysql.connector.version>8.0.23</mysql.connector.version>
 		<ojdbc.version>10.2.0.4</ojdbc.version>
-		<postgresql.version>8.3-603.jdbc3</postgresql.version>
+		<postgresql.version>8.4-702.jdbc4</postgresql.version>
 
 		<!-- Plugin versions -->
 		<version.javadoc.plugin>2.7</version.javadoc.plugin>
