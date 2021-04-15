@@ -7,10 +7,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [3.2.10.SP3_seam2_hibernate5]
+    branches: ['*']
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [3.2.10.SP3_seam2_hibernate5]
+    branches: [main]
   schedule:
     - cron: '0 19 * * 5'
 
