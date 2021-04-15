@@ -205,7 +205,7 @@
     <dependency>
       <groupId>org.codehaus.izpack</groupId>
       <artifactId>izpack-standalone-compiler</artifactId>
-      <version>4.3.2</version>
+      <version>4.3.5</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -259,18 +259,18 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="project.version" value="${project.version}" />
-                <property name="project.build.dir" value="${project.build.directory}" />
-                <property name="project.build.assembly.dir" value="${assemblyDirectory}" />
-                <property name="resources.dir" value="${resourcesDirectory}" />
-                <property name="resources.output.dir" value="${project.build.outputDirectory}" />
-                <property name="jbpm.home" value="${jbpm.home}" />
-                <property name="container" value="${container}" />
-                <property name="jboss.home" value="${jboss.home}" />
-                <property name="jboss.server" value="${jboss.server}" />
-                <property name="tomcat.home" value="${tomcat.home}" />
-                <property name="database" value="${database}" />
-                <ant antfile="scripts/antrun-installer.xml" target="process-resources" />
+                <property name="project.version" value="${project.version}"/>
+                <property name="project.build.dir" value="${project.build.directory}"/>
+                <property name="project.build.assembly.dir" value="${assemblyDirectory}"/>
+                <property name="resources.dir" value="${resourcesDirectory}"/>
+                <property name="resources.output.dir" value="${project.build.outputDirectory}"/>
+                <property name="jbpm.home" value="${jbpm.home}"/>
+                <property name="container" value="${container}"/>
+                <property name="jboss.home" value="${jboss.home}"/>
+                <property name="jboss.server" value="${jboss.server}"/>
+                <property name="tomcat.home" value="${tomcat.home}"/>
+                <property name="database" value="${database}"/>
+                <ant antfile="scripts/antrun-installer.xml" target="process-resources"/>
               </tasks>
             </configuration>
           </execution>
