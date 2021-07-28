@@ -63,8 +63,14 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   private static final long JOB_TIMEOUT = 90 * 1000;
 
   protected void setUp() throws Exception {
+	  try {
     super.setUp();
     createJbpmContext();
+	  }
+	  catch (Exception e) {
+		  e.printStackTrace();
+		  throw e;
+	  }
   }
 
   protected void runTest() throws Throwable {
@@ -73,7 +79,9 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
     }
     catch (Exception e) {
       // prevent unsafe use of the session after an exception occurs
-      if (!jbpmContext.isClosed()) jbpmContext.setRollbackOnly();
+      if (!jbpmContext.isClosed()) {
+    	  jbpmContext.setRollbackOnly();
+      }
       throw e;
     }
   }
@@ -83,8 +91,9 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
     	deleteProcessDefinitions();
     }
     closeJbpmContext();
+    createJbpmContext();
     ensureCleanDatabase();
-
+    closeJbpmContext();
     super.tearDown();
   }
 
@@ -102,21 +111,41 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   }
 
   private void ensureCleanDatabase() {
+  
+	  
     DbPersistenceServiceFactory persistenceServiceFactory =
       (DbPersistenceServiceFactory) getJbpmConfiguration().getServiceFactory("persistence");
-    if (persistenceServiceFactory == null) return;
-
+    if (persistenceServiceFactory == null) {
+    	return;
+    }
+    
+//    JbpmSchema jbpmSchema = persistenceServiceFactory.getJbpmSchema();
     boolean hasLeftOvers = false;
-    JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
-    JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration);
+    
 
-    for (Iterator i = jbpmSchema.getRowsPerTable().entrySet().iterator(); i.hasNext();) {
-      Map.Entry entry = (Map.Entry) i.next();
-      Long count = (Long) entry.getValue();
-      if (count.intValue() != 0) {
-        hasLeftOvers = true;
-        log.error(getName() + " left " + count + " records in " + entry.getKey());
-      }
+    JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
+    if (jbpmHibernateConfiguration == null) {
+    	return;
+    }
+
+
+    JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration, jbpmContext);
+    try {
+    	jbpmSchema.getRowsPerTable();
+    }
+    catch (Exception e) {
+    	e.printStackTrace();
+    }
+    
+    Map<String, Long> rowsPerTable = jbpmSchema.getRowsPerTable();
+    if (rowsPerTable != null && rowsPerTable.entrySet() != null) {
+    	for (Map.Entry<String, Long> entry: rowsPerTable.entrySet()) {
+    		Long count = entry.getValue();
+    		if (count.intValue() != 0) {
+    			hasLeftOvers = true;
+    	        log.error(getName() + " left " + count + " records in " + entry.getKey());
+    		}
+    	}
     }
 
     if (hasLeftOvers) {
@@ -339,7 +368,7 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
     processDefinitionIds.add(Long.valueOf(processDefinition.getId()));
   }
 
-  protected void initializeMembers() {
+  protected void initializeMembers() {	  
     session = jbpmContext.getSession();
     graphSession = jbpmContext.getGraphSession();
     taskMgmtSession = jbpmContext.getTaskMgmtSession();

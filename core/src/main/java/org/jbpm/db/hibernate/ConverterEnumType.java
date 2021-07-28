@@ -29,6 +29,7 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.jbpm.context.exe.Converter;
 
@@ -103,19 +104,19 @@ public class ConverterEnumType implements UserType, Serializable {
     preparedStatement.setString(index, converterDatabaseId);
   }
 
-    @Override
-    public Object nullSafeGet(ResultSet rs, String[] names,
-            SessionImplementor session, Object owner) throws HibernateException,
-            SQLException {
 
-        return nullSafeGet(rs, names, owner);
-    }
 
-    @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index,
-            SessionImplementor session) throws HibernateException, SQLException {
 
-        nullSafeSet(st, value, index);
+	@Override
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+			throws HibernateException, SQLException {
+		return nullSafeGet(rs, names, owner);
+	}
 
-    }
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
+			throws HibernateException, SQLException {
+		nullSafeSet(st, value, index);
+		
+	}
 }

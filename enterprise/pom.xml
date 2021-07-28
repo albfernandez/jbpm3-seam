@@ -102,6 +102,7 @@
 
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${version.javadoc.plugin}</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>

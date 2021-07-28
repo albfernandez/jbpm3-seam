@@ -21,7 +21,7 @@
  */
 package org.jbpm.db.hibernate;
 
-import org.hibernate.dialect.MySQL5InnoDBDialect;
+import org.hibernate.dialect.MySQL5Dialect;
 import org.hibernate.internal.util.StringHelper;
 
 /**
@@ -33,19 +33,19 @@ import org.hibernate.internal.util.StringHelper;
  * @see <a href="https://jira.jboss.org/jira/browse/JBPM-2143">JBPM-2143</a>
  * @author Alejandro Guizar
  */
-public class MySQLDialect extends MySQL5InnoDBDialect {
+public class MySQLDialect extends MySQL5Dialect {
 
   public String getAddForeignKeyConstraintString(String constraintName,
       String[] foreignKey, String referencedTable, String[] primaryKey,
       boolean referencesPrimaryKey) {
     return new StringBuffer(30).append(" add constraint ")
         .append(constraintName)
-        .append(" foreign key (")
-        .append(StringHelper.join(", ", foreignKey))
+        .append(" foreign key (")        
+        .append(String.join(", ", foreignKey))
         .append(") references ")
         .append(referencedTable)
         .append(" (")
-        .append(StringHelper.join(", ", primaryKey))
+        .append(String.join(", ", primaryKey))
         .append(')')
         .toString();
   }

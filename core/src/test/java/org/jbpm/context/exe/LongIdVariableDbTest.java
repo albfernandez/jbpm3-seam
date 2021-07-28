@@ -62,6 +62,7 @@ public class LongIdVariableDbTest extends AbstractDbTestCase {
   }
 
   public void testCustomVariableClassWithLongId() {
+	  try {
     // create and save process definition
     ProcessDefinition processDefinition = new ProcessDefinition(getName());
     processDefinition.addDefinition(new ContextDefinition());
@@ -84,5 +85,10 @@ public class LongIdVariableDbTest extends AbstractDbTestCase {
     // delete custom object
     processInstance.getContextInstance().deleteVariable("custom");
     session.delete(customLongObject);
+	  }
+	  catch (Exception e) {
+		  e.printStackTrace();
+		  throw e;
+	  }
   }
 }

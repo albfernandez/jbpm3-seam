@@ -53,7 +53,13 @@ public class JBPM1135Test extends AbstractDbTestCase {
 
   public void testTimerOnTimer() {
     ProcessInstance processInstance = jbpmContext.newProcessInstanceForUpdate("jbpm1135");
+    try {
     processInstance.getContextInstance().setVariable("eventCallback", new EventCallback());
+    }
+    catch (Exception e) {
+    	e.printStackTrace();
+    	throw e;
+    }
     processInstance.signal();
     assertEquals("firstNode", processInstance.getRootToken().getNode().getName());
 

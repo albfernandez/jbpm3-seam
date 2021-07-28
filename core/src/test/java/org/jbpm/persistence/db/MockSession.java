@@ -4,6 +4,21 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Selection;
+import javax.persistence.metamodel.Metamodel;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -15,6 +30,7 @@ import org.hibernate.Interceptor;
 import org.hibernate.LobHelper;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.Query;
 import org.hibernate.ReplicationMode;
@@ -28,11 +44,17 @@ import org.hibernate.SimpleNaturalIdLoadAccess;
 import org.hibernate.Transaction;
 import org.hibernate.TypeHelper;
 import org.hibernate.UnknownProfileException;
+import org.hibernate.cache.spi.CacheTransactionSynchronization;
 import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.engine.jdbc.connections.spi.JdbcConnectionAccess;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
+import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.query.spi.sql.NativeSQLQuerySpecification;
+import org.hibernate.engine.spi.ActionQueue;
+import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.ExceptionConverter;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.NamedQueryDefinition;
 import org.hibernate.engine.spi.NamedSQLQueryDefinition;
@@ -41,13 +63,18 @@ import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionEventListenerManager;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.graph.spi.RootGraphImplementor;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.loader.custom.CustomQuery;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.procedure.ProcedureCall;
-import org.hibernate.resource.transaction.TransactionCoordinator;
+import org.hibernate.query.spi.NativeQueryImplementor;
+import org.hibernate.query.spi.QueryImplementor;
+import org.hibernate.query.spi.ScrollableResultsImplementor;
+import org.hibernate.resource.jdbc.spi.JdbcSessionContext;
 import org.hibernate.stat.SessionStatistics;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 @SuppressWarnings( {"rawtypes", "unchecked", "unused" } )
 public class MockSession implements org.hibernate.Session, org.hibernate.engine.spi.SessionImplementor {
@@ -123,10 +150,7 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public FlushMode getFlushMode() {
-    throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public void setCacheMode(CacheMode cacheMode) {
@@ -138,10 +162,6 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public SessionFactory getSessionFactory() {
-    return sessionFactory;
-  }
 
   @Override
   public void cancelQuery() throws HibernateException {
@@ -313,25 +333,13 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public Query createQuery(String queryString) throws HibernateException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public SQLQuery createSQLQuery(String queryString) throws HibernateException {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public Query createFilter(Object collection, String queryString) throws HibernateException {
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public Query getNamedQuery(String queryName) throws HibernateException {
-    throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public void clear() {
@@ -587,10 +595,7 @@ private static final long serialVersionUID = 1L;
       throw new UnsupportedOperationException();
   }
 
-  @Override
-  public void disableTransactionAutoJoin() {
-      throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public boolean isTransactionInProgress() {
@@ -620,6 +625,9 @@ private static final long serialVersionUID = 1L;
 
   @Override
   public SessionFactoryImplementor getFactory() {
+	  if (this.sessionFactory instanceof MockSessionFactory) {
+		  return ((MockSessionFactory) this.sessionFactory).getSessionFactoryImplementor();
+	  }
     throw new UnsupportedOperationException();
   }
 
@@ -633,15 +641,7 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public ScrollableResults scroll( String query, QueryParameters queryParameters ) throws HibernateException {
-    throw new UnsupportedOperationException();
-  }
 
-  @Override
-  public ScrollableResults scroll( Criteria criteria, ScrollMode scrollMode ) {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public List list( Criteria criteria ) {
@@ -696,11 +696,7 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public ScrollableResults scrollCustomQuery( CustomQuery customQuery, QueryParameters queryParameters )
-    throws HibernateException {
-    throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public List list( NativeSQLQuerySpecification spec, QueryParameters queryParameters )
@@ -708,10 +704,7 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public ScrollableResults scroll( NativeSQLQuerySpecification spec, QueryParameters queryParameters ) {
-    throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public int getDontFlushFromFind() {
@@ -734,10 +727,6 @@ private static final long serialVersionUID = 1L;
     return 0;
   }
 
-  @Override
-  public Query getNamedSQLQuery( String name ) {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public boolean isEventSource() {
@@ -749,10 +738,7 @@ private static final long serialVersionUID = 1L;
       throw new UnsupportedOperationException();
   }
 
-  @Override
-  public TransactionCoordinator getTransactionCoordinator() {
-    throw new UnsupportedOperationException();
-  }
+
 
   @Override
   public JdbcCoordinator getJdbcCoordinator() {
@@ -779,19 +765,489 @@ private static final long serialVersionUID = 1L;
     throw new UnsupportedOperationException();
   }
 
-  @Override
-  public Query createQuery( NamedQueryDefinition namedQueryDefinition ) {
-    throw new UnsupportedOperationException();
-  }
 
-  @Override
-  public SQLQuery createSQLQuery( NamedSQLQueryDefinition namedQueryDefinition ) {
-    throw new UnsupportedOperationException();
-  }
 
   @Override
   public SessionEventListenerManager getEventListenerManager() {
     throw new UnsupportedOperationException();
   }
+
+	@Override
+	public Integer getJdbcBatchSize() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setJdbcBatchSize(Integer jdbcBatchSize) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void remove(Object entity) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public <T> T find(Class<T> entityClass, Object primaryKey) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T getReference(Class<T> entityClass, Object primaryKey) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setFlushMode(FlushModeType flushMode) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void lock(Object entity, LockModeType lockMode) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void refresh(Object entity, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void refresh(Object entity, LockModeType lockMode) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void detach(Object entity) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public LockModeType getLockMode(Object entity) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setProperty(String propertyName, Object value) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void joinTransaction() {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public boolean isJoinedToTransaction() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> cls) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object getDelegate() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public EntityManagerFactory getEntityManagerFactory() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public CriteriaBuilder getCriteriaBuilder() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Metamodel getMetamodel() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public JdbcServices getJdbcServices() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public UUID getSessionIdentifier() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void checkOpen(boolean markForRollbackIfClosed) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void markForRollbackOnly() {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public long getTransactionStartTimestamp() {
+		return 0;
+	}
+
+	@Override
+	public CacheTransactionSynchronization getCacheTransactionSynchronization() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Transaction accessTransaction() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ScrollableResultsImplementor scroll(String query, QueryParameters queryParameters) throws HibernateException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ScrollableResultsImplementor scroll(Criteria criteria, ScrollMode scrollMode) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ScrollableResultsImplementor scrollCustomQuery(CustomQuery customQuery, QueryParameters queryParameters)
+			throws HibernateException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ScrollableResultsImplementor scroll(NativeSQLQuerySpecification spec, QueryParameters queryParameters) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ExceptionConverter getExceptionConverter() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public PersistenceContext getPersistenceContextInternal() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public JdbcSessionContext getJdbcSessionContext() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public org.hibernate.resource.transaction.spi.TransactionCoordinator getTransactionCoordinator() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void startTransactionBoundary() {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void afterTransactionBegin() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void beforeTransactionCompletion() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void afterTransactionCompletion(boolean successful, boolean delayed) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void flushBeforeTransactionCompletion() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean shouldAutoJoinTransaction() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean useStreamForLobBinding() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public LobCreator getLobCreator() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TimeZone getJdbcTimeZone() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SessionImplementor getSession() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public LockOptions getLockRequest(LockModeType lockModeType, Map<String, Object> properties) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SessionFactoryImplementor getSessionFactory() {
+		return getFactory();
+	}
+
+	@Override
+	public <T> RootGraphImplementor<T> createEntityGraph(Class<T> rootType) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public RootGraphImplementor<?> createEntityGraph(String graphName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public RootGraphImplementor<?> getEntityGraph(String graphName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isFlushBeforeCompletionEnabled() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ActionQueue getActionQueue() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object instantiate(EntityPersister persister, Serializable id) throws HibernateException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void forceFlush(EntityEntry e) throws HibernateException {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public QueryImplementor createQuery(String queryString) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> QueryImplementor<T> createQuery(String queryString, Class<T> resultType) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> QueryImplementor<T> createNamedQuery(String name, Class<T> resultType) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryImplementor createNamedQuery(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor createNativeQuery(String sqlString) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor createNativeQuery(String sqlString, Class resultClass) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor createNativeQuery(String sqlString, String resultSetMapping) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor createSQLQuery(String sqlString) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor getNamedNativeQuery(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryImplementor getNamedQuery(String queryName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public NativeQueryImplementor getNamedSQLQuery(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> QueryImplementor<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryImplementor createQuery(CriteriaUpdate updateQuery) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryImplementor createQuery(CriteriaDelete deleteQuery) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> QueryImplementor<T> createQuery(String jpaqlString, Class<T> resultClass, Selection selection, QueryOptions queryOptions) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void merge(String entityName, Object object, Map copiedAlready) throws HibernateException {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void persist(String entityName, Object object, Map createdAlready) throws HibernateException {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void persistOnFlush(String entityName, Object object, Map copiedAlready) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void refresh(String entityName, Object object, Map refreshedAlready) throws HibernateException {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void delete(String entityName, Object child, boolean isCascadeDeleteEnabled, Set transientEntities) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void removeOrphanBeforeUpdates(String entityName, Object child) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public FlushModeType getFlushMode() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setHibernateFlushMode(FlushMode flushMode) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public FlushMode getHibernateFlushMode() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean contains(String entityName, Object object) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
+		throw new UnsupportedOperationException();
+	}
 
 }

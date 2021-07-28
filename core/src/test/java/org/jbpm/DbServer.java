@@ -1,7 +1,10 @@
 package org.jbpm;
 
+import java.util.EnumSet;
+
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.hsqldb.Server;
 import org.hsqldb.util.DatabaseManager;
 
@@ -13,7 +16,7 @@ public class DbServer {
   public static void main(String[] args) {
     Configuration configuration = new Configuration();
     configuration.configure();
-    new SchemaExport(configuration).create(true, true);
+    new SchemaExport().create(EnumSet.of(TargetType.SCRIPT, TargetType.DATABASE), null);
 
     Server server = new Server();
     server.setSilent(false);

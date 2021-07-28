@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.AbstractStandardBasicType;
 import org.hibernate.type.DiscriminatorType;
 import org.hibernate.type.SingleColumnType;
@@ -90,14 +91,6 @@ public class LimitedTextType extends AbstractStandardBasicType<String>
     return getSqlTypeDescriptor().getSqlType();
   }
 
-  @Override
-  public final void nullSafeSet(PreparedStatement st, Object value, int index, boolean[] settable, SessionImplementor session)
-      throws HibernateException, SQLException {
-    if ( settable[0] ) {
-        String text = toLimitedString( (String)value );
-        nullSafeSet( st, text, index, session );
-    }
-  }
 
   protected String toLimitedString( String value ) {
     if (value == null) {
@@ -110,6 +103,16 @@ public class LimitedTextType extends AbstractStandardBasicType<String>
     }
     return text;
   }
+
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, boolean[] settable, SharedSessionContractImplementor session)
+			throws HibernateException, SQLException {
+		if (settable[0]) {
+			String text = toLimitedString((String) value);
+			nullSafeSet(st, text, index, session);
+		}
+
+	}
 
 
 }

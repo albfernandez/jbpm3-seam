@@ -106,7 +106,9 @@ public class Services implements Serializable {
     }
     this.serviceFactories = serviceFactories;
     this.services = new HashMap(serviceFactories.size());
-    if (saveOperations != null) this.saveOperations = saveOperations;
+    if (saveOperations != null) {
+    	this.saveOperations = saveOperations;
+    }
   }
 
   /** @deprecated use {@link #Services(Map, List)} instead */

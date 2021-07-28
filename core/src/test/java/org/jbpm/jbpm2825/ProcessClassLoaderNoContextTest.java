@@ -37,20 +37,28 @@ import org.jbpm.instantiation.ProcessClassLoader;
 public class ProcessClassLoaderNoContextTest extends AbstractDbTestCase {
 
   public void testProcessClassLoaderNoContext() {
-    FileDefinition fileDefinition = new FileDefinition();
-    byte[] magicNumber = {
-      (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE
-    };
-    fileDefinition.addFile("classes/org/example/Undef", magicNumber);
-
-    ProcessDefinition processDefinition = new ProcessDefinition(getName());
-    processDefinition.addDefinition(fileDefinition);
-    jbpmContext.deployProcessDefinition(processDefinition);
-
-    ClassLoader procClassLoader = JbpmConfiguration.getProcessClassLoader(processDefinition);
-    String undefClassName = "org.example.Undef";
-
-    closeJbpmContext();
+	  String undefClassName = "org.example.Undef";
+	  ClassLoader procClassLoader = null; 
+	  try {
+	    FileDefinition fileDefinition = new FileDefinition();
+	    byte[] magicNumber = {
+	      (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE
+	    };
+	    fileDefinition.addFile("classes/org/example/Undef", magicNumber);
+	
+	    ProcessDefinition processDefinition = new ProcessDefinition(getName());
+	    processDefinition.addDefinition(fileDefinition);
+	    jbpmContext.deployProcessDefinition(processDefinition);
+	
+	    procClassLoader = JbpmConfiguration.getProcessClassLoader(processDefinition);
+	    
+	
+	    closeJbpmContext();
+	  }
+	  catch (Exception e) {
+		  e.printStackTrace();
+		  throw e;
+	  }
     try {
       Class.forName(undefClassName, false, procClassLoader);
       fail("expected class " + undefClassName + " to not be found");

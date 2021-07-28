@@ -57,8 +57,8 @@ public class JbpmHibernateConfiguration implements Serializable
 
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setSuperclass(Configuration.class);
-//        proxyFactory.setInterfaces(new Class[] { Serializable.class });
-
+        proxyFactory.setInterfaces(new Class[] { Serializable.class });
+        
         proxyFactory.setFilter(new MethodFilter() {
             @Override
             public boolean isHandled(Method m) {
@@ -73,8 +73,8 @@ public class JbpmHibernateConfiguration implements Serializable
 
                 long start = System.currentTimeMillis();
                 try {
-//                    return proceed.invoke(self, args);
-                    return buildSessionFactory();
+                    return proceed.invoke(self, args);
+//                    return buildSessionFactory();
                 } catch (Exception e ) {
                     throw new RuntimeException( e );
                 } finally {
@@ -187,7 +187,7 @@ public class JbpmHibernateConfiguration implements Serializable
         if ( entityTuplizerFactory != null ) {
             sessionFactoryBuilder.applyEntityTuplizerFactory( entityTuplizerFactory );
         }
-
+        
         return sessionFactoryBuilder.build();
     }
 
@@ -226,20 +226,4 @@ public class JbpmHibernateConfiguration implements Serializable
             throw new RuntimeException(e);
         }
     }
-
-//    private static <T> T getFieldValue(Object instance, String fieldName) {
-//        try
-//        {
-//            Field field = instance.getClass().getDeclaredField(fieldName);
-//            field.setAccessible(true);
-//
-//            @SuppressWarnings( "unchecked" )
-//            T fieldValue = (T)field.get(instance);
-//            return fieldValue;
-//        }
-//        catch (Exception e)
-//        {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }

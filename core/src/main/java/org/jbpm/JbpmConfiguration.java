@@ -239,8 +239,8 @@ public class JbpmConfiguration implements Serializable {
   static final String OBJECT_NAME = "jbpm.configuration";
 
   private static ObjectFactory defaultObjectFactory;
-  private static final Map instances = new HashMap();
-  private static final ThreadLocal threadLocalConfigurationStack = new ThreadLocal();
+  private static final Map<String,JbpmConfiguration> instances = new HashMap<>();
+  private static final ThreadLocal<List<JbpmConfiguration>> threadLocalConfigurationStack = new ThreadLocal<>();
 
   private final ObjectFactory objectFactory;
   private final String resourceName;
@@ -276,7 +276,9 @@ public class JbpmConfiguration implements Serializable {
   }
 
   public static JbpmConfiguration getInstance(String resource) {
-    if (resource == null) resource = DEFAULT_RESOURCE;
+    if (resource == null) {
+    	resource = DEFAULT_RESOURCE;
+    }
 
     JbpmConfiguration instance;
     synchronized (instances) {
@@ -549,9 +551,12 @@ public class JbpmConfiguration implements Serializable {
       try {
         Map serviceFactories = jbpmContext.getServices().getServiceFactories();
         if (serviceFactories != null) {
-          for (Iterator<ServiceFactory> i = serviceFactories.values().iterator(); i.hasNext();) {
-            ServiceFactory serviceFactory = (ServiceFactory) i.next();
-            serviceFactory.close();
+          for (Iterator i = serviceFactories.values().iterator(); i.hasNext();) {
+        	  Object sf = i.next();
+        	  if (sf instanceof ServiceFactory) {
+	            ServiceFactory serviceFactory = (ServiceFactory) sf;
+	            serviceFactory.close();
+        	  }
           }
         }
       }
@@ -596,16 +601,16 @@ public class JbpmConfiguration implements Serializable {
 
   void pushJbpmContext(JbpmContext jbpmContext) {
     // first push the configuration
-    List configStack = (List) threadLocalConfigurationStack.get();
+    List<JbpmConfiguration> configStack = threadLocalConfigurationStack.get();
     if (configStack == null) {
-      configStack = new ArrayList();
+      configStack = new ArrayList<>();
       threadLocalConfigurationStack.set(configStack);
     }
     configStack.add(this);
     // then push the context
-    List contextStack = (List) threadLocalContextStack.get();
+    List<JbpmContext> contextStack = threadLocalContextStack.get();
     if (contextStack == null) {
-      contextStack = new ArrayList();
+      contextStack = new ArrayList<>();
       threadLocalContextStack.set(contextStack);
     }
     contextStack.add(jbpmContext);

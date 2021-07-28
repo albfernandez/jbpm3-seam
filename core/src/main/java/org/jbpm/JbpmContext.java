@@ -108,14 +108,18 @@ public class JbpmContext implements Serializable {
   private boolean isClosed;
 
   public JbpmContext(Services services, ObjectFactory objectFactory) {
-    if (services == null) throw new IllegalArgumentException("null services");
+    if (services == null) {
+    	throw new IllegalArgumentException("null services");
+    }
 
     this.services = services;
     this.objectFactory = objectFactory;
   }
 
   private void ensureOpen() {
-    if (isClosed) throw new JbpmException(this + " is closed");
+    if (isClosed) {
+    	throw new JbpmException(this + " is closed");
+    }
   }
 
   public boolean isClosed() {
@@ -132,8 +136,12 @@ public class JbpmContext implements Serializable {
     RuntimeException serviceException = closeServices();
     isClosed = true;
 
-    if (saveException != null) throw saveException;
-    if (serviceException != null) throw serviceException;
+    if (saveException != null) {
+    	throw saveException;
+    }
+    if (serviceException != null) {
+    	throw serviceException;
+    }
   }
 
   private RuntimeException autoSave() {
@@ -671,12 +679,16 @@ public class JbpmContext implements Serializable {
   public void setActorId(String actorId) {
     ensureOpen();
     AuthenticationService authService = services.getAuthenticationService();
-    if (authService != null) authService.setActorId(actorId);
+    if (authService != null) {
+    	authService.setActorId(actorId);
+    }
   }
 
   public void addAutoSaveProcessInstance(ProcessInstance processInstance) {
     ensureOpen();
-    if (autoSaveProcessInstances == null) autoSaveProcessInstances = new HashSet();
+    if (autoSaveProcessInstances == null) {
+    	autoSaveProcessInstances = new HashSet();
+    }
     autoSaveProcessInstances.add(processInstance);
   }
 
@@ -699,7 +711,9 @@ public class JbpmContext implements Serializable {
     JbpmConfiguration configuration = getJbpmConfiguration();
     if (configuration != null) {
       String resourceName = configuration.getResourceName();
-      if (resourceName != null) return "JbpmContext(" + resourceName + ')';
+      if (resourceName != null) {
+    	  return "JbpmContext(" + resourceName + ')';
+      }
     }
     return "JbpmContext@" + Integer.toHexString(hashCode());
   }

@@ -70,15 +70,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- Hibernate 5.2 and later versions require at least Java 1.8 and JDBC 
-			4.2. -->
-		<!-- Hibernate 5.1 and older versions require at least Java 1.6 and JDBC 
-			4.0. -->
-		<!-- When building Hibernate 5.1 or older from sources, you need Java 1.7 
-			due to a bug in the JDK 1.6 compiler. -->
 
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<!-- Dependency versions -->
 		<cargo.version>1.0.3</cargo.version>
@@ -311,7 +305,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>5.0.10.Final</version>
+				<version>5.4.31.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.izpack</groupId>
@@ -498,7 +492,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
-			<version>5.0.10.Final</version>
+			<version>5.4.31.Final</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -574,6 +568,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${version.javadoc.plugin}</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<quiet>true</quiet>
@@ -760,16 +755,7 @@
 			</dependencyManagement>
 		</profile>
 
-		<!-- Name: jdk15 Desc: modules specific to jdk 1.5 and up -->
-		<profile>
-			<id>jdk15</id>
-			<activation>
-				<jdk>[1.5,1.7)</jdk>
-			</activation>
-			<modules>
-				<module>enterprise-jee5</module>
-			</modules>
-		</profile>
+		
 
 		<profile>
 			<id>jdk11</id>

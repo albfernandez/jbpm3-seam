@@ -233,7 +233,13 @@ public class TaskInstanceDbTest extends AbstractDbTestCase {
     deployProcessDefinition(processDefinition);
 
     ProcessInstance processInstance = new ProcessInstance(processDefinition);
+    try {
     processInstance.getContextInstance().setVariable("user", new User(false, true));
+    }
+    catch (Exception e) {
+    	e.printStackTrace();
+    	throw e;
+    }
     processInstance.signal();
 
     processInstance = saveAndReload(processInstance);

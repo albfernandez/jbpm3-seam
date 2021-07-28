@@ -68,7 +68,7 @@ public class PersistenceConfigurationDbTest extends AbstractJbpmTestCase {
     try {
       DbPersistenceService dbPersistenceService = (DbPersistenceService) jbpmContext.getServices()
         .getPersistenceService();
-      assertEquals(0, dbPersistenceService.getSessionFactory().getAllClassMetadata().size());
+      assertEquals(0, dbPersistenceService.getSessionFactory().getMetamodel().getManagedTypes().size());
       assertEquals("org.hibernate.dialect.PostgreSQLDialect", dbPersistenceServiceFactory.getJbpmHibernateConfiguration()
         .getConfigurationProxy().getProperty("hibernate.dialect"));
     }
