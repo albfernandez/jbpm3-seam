@@ -73,8 +73,8 @@ public class JbpmHibernateConfiguration implements Serializable
 
                 long start = System.currentTimeMillis();
                 try {
-                    return proceed.invoke(self, args);
-//                    return buildSessionFactory();
+//                    return proceed.invoke(self, args);
+                    return buildSessionFactory();
                 } catch (Exception e ) {
                     throw new RuntimeException( e );
                 } finally {
