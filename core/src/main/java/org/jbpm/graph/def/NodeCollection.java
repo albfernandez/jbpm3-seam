@@ -22,7 +22,8 @@
 package org.jbpm.graph.def;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * is a common supertype for a ProcessDefinition and a SuperState.

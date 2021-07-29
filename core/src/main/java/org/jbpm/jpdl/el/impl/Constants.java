@@ -55,8 +55,8 @@
 
 package org.jbpm.jpdl.el.impl;
 
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  *

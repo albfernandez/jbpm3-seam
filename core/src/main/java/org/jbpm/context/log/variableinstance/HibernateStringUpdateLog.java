@@ -21,8 +21,8 @@
  */
 package org.jbpm.context.log.variableinstance;
 
-import org.jbpm.context.exe.*;
-import org.jbpm.context.log.*;
+import org.jbpm.context.exe.VariableInstance;
+import org.jbpm.context.log.VariableUpdateLog;
 
 public class HibernateStringUpdateLog extends VariableUpdateLog {
 

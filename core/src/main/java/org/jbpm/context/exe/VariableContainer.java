@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.context.log.VariableDeleteLog;

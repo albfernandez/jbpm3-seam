@@ -25,7 +25,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.StandardBasicTypes;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.context.exe.JbpmTypeMatcher;
 

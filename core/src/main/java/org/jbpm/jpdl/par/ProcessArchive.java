@@ -35,8 +35,6 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.jpdl.JpdlException;
@@ -45,6 +43,7 @@ import org.jbpm.jpdl.xml.ProblemListener;
 import org.jbpm.util.ClassLoaderUtil;
 import org.jbpm.util.IoUtil;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class ProcessArchive implements ProblemListener, Serializable {
 

@@ -23,7 +23,7 @@ package org.jbpm.jpdl.par;
 
 import java.io.Serializable;
 
-import org.jbpm.graph.def.*;
+import org.jbpm.graph.def.ProcessDefinition;
 
 public interface ProcessArchiveParser extends Serializable {
 

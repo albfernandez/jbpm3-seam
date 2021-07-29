@@ -26,11 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.svc.Services;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class JbpmContextInfo extends AbstractObjectInfo {
 

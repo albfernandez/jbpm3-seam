@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-
 import org.jbpm.JbpmException;
 import org.jbpm.util.ClassLoaderUtil;
 

@@ -33,7 +33,6 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.graph.def.ProcessDefinition;

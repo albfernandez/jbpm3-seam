@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmException;
 import org.jbpm.JbpmConfiguration.Configs;
+import org.jbpm.JbpmException;
 import org.jbpm.calendar.BusinessCalendar;
 import org.jbpm.calendar.Duration;
 import org.jbpm.graph.def.DelegationException;

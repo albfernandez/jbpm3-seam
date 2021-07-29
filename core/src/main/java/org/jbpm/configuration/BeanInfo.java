@@ -25,10 +25,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmException;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class BeanInfo extends AbstractObjectInfo {
 

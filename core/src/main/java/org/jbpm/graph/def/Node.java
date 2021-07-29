@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
-
 import org.jbpm.JbpmException;
 import org.jbpm.graph.action.ActionTypes;
 import org.jbpm.graph.exe.ExecutionContext;

@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.logging.log.ProcessLog;

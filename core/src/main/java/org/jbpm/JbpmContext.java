@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
 import org.jbpm.configuration.ObjectFactory;
 import org.jbpm.db.ContextSession;
 import org.jbpm.db.GraphSession;

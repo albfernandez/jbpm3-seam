@@ -22,7 +22,6 @@
 package org.jbpm.db.hibernate;
 
 import org.hibernate.dialect.MySQL5Dialect;
-import org.hibernate.internal.util.StringHelper;
 
 /**
  * Small variation of the default MySQL InnoDB dialect meant for a smoother

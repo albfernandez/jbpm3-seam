@@ -30,11 +30,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.util.ClassLoaderUtil;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class NodeTypes {
 

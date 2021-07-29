@@ -21,8 +21,8 @@
  */
 package org.jbpm.graph.log;
 
-import org.jbpm.graph.exe.*;
-import org.jbpm.logging.log.*;
+import org.jbpm.graph.exe.Token;
+import org.jbpm.logging.log.ProcessLog;
 
 public class TokenEndLog extends ProcessLog {
 

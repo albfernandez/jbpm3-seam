@@ -55,9 +55,9 @@
 
 package org.jbpm.jpdl.el.impl;
 
-import org.jbpm.jpdl.el.ELException;
-
 import java.math.BigDecimal;
+
+import org.jbpm.jpdl.el.ELException;
 
 /**
  *

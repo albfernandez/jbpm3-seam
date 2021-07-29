@@ -21,12 +21,11 @@
  */
 package org.jbpm;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jbpm.util.ClassUtil;
+
+import junit.framework.TestCase;
 
 public abstract class AbstractJbpmTestCase extends TestCase {
 

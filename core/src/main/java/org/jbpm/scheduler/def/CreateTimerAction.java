@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.dom4j.Element;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.calendar.BusinessCalendar;

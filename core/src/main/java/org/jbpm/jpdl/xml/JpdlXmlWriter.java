@@ -36,7 +36,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
-
 import org.jbpm.JbpmException;
 import org.jbpm.graph.action.ActionTypes;
 import org.jbpm.graph.def.Action;

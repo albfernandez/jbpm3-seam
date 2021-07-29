@@ -37,14 +37,13 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.jbpm.JbpmConfiguration.Configs;
+import org.jbpm.util.ClassLoaderUtil;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-
-import org.jbpm.JbpmConfiguration.Configs;
-import org.jbpm.util.ClassLoaderUtil;
 
 /**
  * This helper class wraps the processing of XML schema documents to aid {@link JpdlXmlReader}

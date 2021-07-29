@@ -67,9 +67,9 @@ import org.jbpm.jpdl.el.ExpressionEvaluator;
 import org.jbpm.jpdl.el.FunctionMapper;
 import org.jbpm.jpdl.el.VariableResolver;
 import org.jbpm.jpdl.el.parser.ELParser;
-import org.jbpm.jpdl.el.parser.ParseException;
 import org.jbpm.jpdl.el.parser.ELToken;
 import org.jbpm.jpdl.el.parser.ELTokenMgrError;
+import org.jbpm.jpdl.el.parser.ParseException;
 
 /**
  *

@@ -27,12 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmException;
 import org.jbpm.util.ArrayUtil;
 import org.jbpm.util.ClassLoaderUtil;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class ConstructorInfo implements Serializable {
 

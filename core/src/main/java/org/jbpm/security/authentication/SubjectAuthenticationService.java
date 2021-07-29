@@ -29,7 +29,6 @@ import javax.security.auth.Subject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;

@@ -8,13 +8,12 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
-
 import org.jbpm.JbpmException;
 import org.jbpm.db.GraphSession;
 import org.jbpm.graph.def.GraphElement;
 import org.jbpm.graph.def.Node;
-import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.def.Node.NodeType;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.graph.node.ProcessState;
