@@ -226,7 +226,7 @@ public class JbpmSchema {
     schemaExportForDrop.setDelimiter(delimiter);
     EnumSet<TargetType> list = EnumSet.of(TargetType.SCRIPT);
     if (exportToDb) {
-    	list.add(TargetType.DATABASE);
+    	list =  EnumSet.of(TargetType.DATABASE);
     }
     schemaExportForDrop.execute(list, Action.DROP, metadataImplementor);
 
