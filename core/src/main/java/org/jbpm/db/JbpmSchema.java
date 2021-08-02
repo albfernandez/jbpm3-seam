@@ -55,13 +55,19 @@ import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.connections.spi.JdbcConnectionAccess;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
+import org.hibernate.engine.jdbc.spi.JdbcServices;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
+import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.mapping.Table;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.resource.transaction.spi.DdlTransactionIsolator;
+import org.hibernate.resource.transaction.spi.TransactionCoordinatorBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
@@ -70,6 +76,9 @@ import org.hibernate.tool.schema.TargetType;
 import org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl;
 import org.hibernate.tool.schema.extract.spi.DatabaseInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
+import org.hibernate.tool.schema.internal.HibernateSchemaManagementTool.JdbcContextImpl;
+import org.hibernate.tool.schema.internal.exec.JdbcConnectionAccessProvidedConnectionImpl;
+import org.hibernate.tool.schema.internal.exec.JdbcContext;
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
@@ -480,11 +489,15 @@ public class JbpmSchema {
 //    final JdbcConnectionAccess jdbcConnectionAccess = jdbcServices.getBootstrapJdbcConnectionAccess();
 
     final DatabaseInformation databaseInformation;
+    DdlTransactionIsolator ddlt = null;
     try {
+    	JdbcContext ctx = new JdbcContextBuilder (serviceRegistry).buildJdbcContext();
+    	ddlt = getDdlTransactionIsolator(ctx);
+    	
     	databaseInformation = new DatabaseInformationImpl(
     		serviceRegistry, 
     		serviceRegistry.getService(JdbcEnvironment.class), 
-    		null, 
+    		ddlt,
     		metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName());
 
     	/*
@@ -505,6 +518,8 @@ public class JbpmSchema {
     }
     return databaseInformation;
   }
+  
+
 
   private Table findTableMapping(String tableName) {
 
@@ -691,5 +706,77 @@ public class JbpmSchema {
     configure();
     return sessionImplementor;
   }
+  
+  private static class JdbcContextBuilder {
+		private final ServiceRegistry serviceRegistry;
+		private final SqlStatementLogger sqlStatementLogger;
+		private final SqlExceptionHelper sqlExceptionHelper;
+
+		private JdbcConnectionAccess jdbcConnectionAccess;
+		private Dialect dialect;
+
+		public JdbcContextBuilder(ServiceRegistry serviceRegistry) {
+			this.serviceRegistry = serviceRegistry;
+			final JdbcServices jdbcServices = serviceRegistry.getService( JdbcServices.class );
+			this.sqlStatementLogger = jdbcServices.getSqlStatementLogger();
+			this.sqlExceptionHelper = jdbcServices.getSqlExceptionHelper();
+
+			this.dialect = jdbcServices.getJdbcEnvironment().getDialect();
+			this.jdbcConnectionAccess = jdbcServices.getBootstrapJdbcConnectionAccess();
+		}
+
+		public JdbcContext buildJdbcContext() {
+			return new JdbcContextImpl( jdbcConnectionAccess, dialect, sqlStatementLogger, sqlExceptionHelper, serviceRegistry );
+		}
+	}
+  public static class JdbcContextImpl implements JdbcContext {
+		private final JdbcConnectionAccess jdbcConnectionAccess;
+		private final Dialect dialect;
+		private final SqlStatementLogger sqlStatementLogger;
+		private final SqlExceptionHelper sqlExceptionHelper;
+		private final ServiceRegistry serviceRegistry;
+
+		private JdbcContextImpl(
+				JdbcConnectionAccess jdbcConnectionAccess,
+				Dialect dialect,
+				SqlStatementLogger sqlStatementLogger,
+				SqlExceptionHelper sqlExceptionHelper,
+				ServiceRegistry serviceRegistry) {
+			this.jdbcConnectionAccess = jdbcConnectionAccess;
+			this.dialect = dialect;
+			this.sqlStatementLogger = sqlStatementLogger;
+			this.sqlExceptionHelper = sqlExceptionHelper;
+			this.serviceRegistry = serviceRegistry;
+		}
+
+		@Override
+		public JdbcConnectionAccess getJdbcConnectionAccess() {
+			return jdbcConnectionAccess;
+		}
+
+		@Override
+		public Dialect getDialect() {
+			return dialect;
+		}
+
+		@Override
+		public SqlStatementLogger getSqlStatementLogger() {
+			return sqlStatementLogger;
+		}
+
+		@Override
+		public SqlExceptionHelper getSqlExceptionHelper() {
+			return sqlExceptionHelper;
+		}
+
+		@Override
+		public ServiceRegistry getServiceRegistry() {
+			return serviceRegistry;
+		}
+	}
+  
+  private DdlTransactionIsolator getDdlTransactionIsolator(JdbcContext jdbcContext) {
+	  	return jdbcContext.getServiceRegistry().getService( TransactionCoordinatorBuilder.class ).buildDdlTransactionIsolator( jdbcContext );
+	}
 
 }
