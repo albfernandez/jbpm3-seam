@@ -38,9 +38,16 @@ import org.jbpm.svc.Services;
  */
 public class JoinDbTest extends AbstractDbTestCase {
 
+	public JoinDbTest() {
+		super();
+	}
+	
+	protected String getJbpmTestConfig() {
+		return "org/jbpm/graph/node/jbpm.cfg.xml";
+	}
   protected JbpmConfiguration getJbpmConfiguration() {
     if (jbpmConfiguration == null) {
-      jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/graph/node/jbpm.cfg.xml");
+      jbpmConfiguration = super.getJbpmConfiguration();
 
       JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
       try {
@@ -48,6 +55,7 @@ public class JoinDbTest extends AbstractDbTestCase {
           jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
         JbpmSchema jbpmSchema = new JbpmSchema(persistenceServiceFactory.getJbpmHibernateConfiguration());
         jbpmSchema.updateTable("JBPM_NODE");
+        initializeMembers();
       }
       finally {
         jbpmContext.close();

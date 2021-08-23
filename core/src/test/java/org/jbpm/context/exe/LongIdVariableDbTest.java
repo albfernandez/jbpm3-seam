@@ -21,74 +21,48 @@
  */
 package org.jbpm.context.exe;
 
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.context.def.ContextDefinition;
 import org.jbpm.db.AbstractDbTestCase;
-import org.jbpm.db.JbpmSchema;
-import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.persistence.db.DbPersistenceServiceFactory;
-import org.jbpm.svc.Services;
 
 public class LongIdVariableDbTest extends AbstractDbTestCase {
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      // disable logging service to prevent logs from referencing custom object
-      jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/context/exe/jbpm.cfg.xml");
+	public LongIdVariableDbTest() {
+		super();
+	}
 
-      JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-      try {
-        DbPersistenceServiceFactory persistenceServiceFactory =
-          (DbPersistenceServiceFactory) jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-        JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
+	@Override
+	protected String getJbpmTestConfig() {
+		return "org/jbpm/context/exe/jbpm.cfg.xml";
+	}
 
-        JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration);
-        jbpmSchema.createTable("JBPM_TEST_CUSTOMLONGID");
-        jbpmSchema.createTable("JBPM_PROCESSDEFINITION");
-      }
-      finally {
-        jbpmContext.close();
-      }
-    }
-    return jbpmConfiguration;
-  }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
+	public void testCustomVariableClassWithLongId() {
+		try {
+			// create and save process definition
+			ProcessDefinition processDefinition = new ProcessDefinition(getName());
+			processDefinition.addDefinition(new ContextDefinition());
+			deployProcessDefinition(processDefinition);
 
-  public void testCustomVariableClassWithLongId() {
-	  try {
-    // create and save process definition
-    ProcessDefinition processDefinition = new ProcessDefinition(getName());
-    processDefinition.addDefinition(new ContextDefinition());
-    deployProcessDefinition(processDefinition);
+			// create process instance
+			ProcessInstance processInstance = new ProcessInstance(processDefinition);
+			// create custom object
+			CustomLongClass customLongObject = new CustomLongClass("my stuff");
+			processInstance.getContextInstance().setVariable("custom", customLongObject);
 
-    // create process instance
-    ProcessInstance processInstance = new ProcessInstance(processDefinition);
-    // create custom object
-    CustomLongClass customLongObject = new CustomLongClass("my stuff");
-    processInstance.getContextInstance().setVariable("custom", customLongObject);
+			// save process instance
+			processInstance = saveAndReload(processInstance);
+			// get custom object from variables
+			customLongObject = (CustomLongClass) processInstance.getContextInstance().getVariable("custom");
+			assertNotNull(customLongObject);
+			assertEquals("my stuff", customLongObject.getName());
 
-    // save process instance
-    processInstance = saveAndReload(processInstance);
-    // get custom object from variables
-    customLongObject = (CustomLongClass) processInstance.getContextInstance()
-      .getVariable("custom");
-    assertNotNull(customLongObject);
-    assertEquals("my stuff", customLongObject.getName());
-
-    // delete custom object
-    processInstance.getContextInstance().deleteVariable("custom");
-    session.delete(customLongObject);
-	  }
-	  catch (Exception e) {
-		  e.printStackTrace();
-		  throw e;
-	  }
-  }
+			// delete custom object
+			processInstance.getContextInstance().deleteVariable("custom");
+			session.delete(customLongObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }

@@ -212,7 +212,7 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   }
 
   protected void createJbpmContext() {
-    jbpmContext = getJbpmConfiguration().createJbpmContext();
+    jbpmContext = getJbpmConfiguration().createJbpmContext();     
     initializeMembers();
   }
 
@@ -368,7 +368,7 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
     processDefinitionIds.add(Long.valueOf(processDefinition.getId()));
   }
 
-  protected void initializeMembers() {	  
+  protected void initializeMembers() {
     session = jbpmContext.getSession();
     graphSession = jbpmContext.getGraphSession();
     taskMgmtSession = jbpmContext.getTaskMgmtSession();

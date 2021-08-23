@@ -40,7 +40,7 @@ public class HibernateLongIdMatcher implements JbpmTypeMatcher {
         valueClass = valueClass.getSuperclass();
       }
       SessionFactory sessionFactory = jbpmContext.getSessionFactory();
-      if (sessionFactory != null) {
+      if (sessionFactory != null) {  	  
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(valueClass);
         return classMetadata != null
           && classMetadata.getIdentifierType() == StandardBasicTypes.LONG;
