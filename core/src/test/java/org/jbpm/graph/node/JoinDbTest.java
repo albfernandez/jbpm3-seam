@@ -45,29 +45,7 @@ public class JoinDbTest extends AbstractDbTestCase {
 	protected String getJbpmTestConfig() {
 		return "org/jbpm/graph/node/jbpm.cfg.xml";
 	}
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      jbpmConfiguration = super.getJbpmConfiguration();
 
-      JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-      try {
-        DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory)
-          jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-        JbpmSchema jbpmSchema = new JbpmSchema(persistenceServiceFactory.getJbpmHibernateConfiguration());
-        jbpmSchema.updateTable("JBPM_NODE");
-        initializeMembers();
-      }
-      finally {
-        jbpmContext.close();
-      }
-    }
-    return jbpmConfiguration;
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
 
   public void testParentLockMode() {
     ProcessDefinition processDefinition = ProcessDefinition.parseXmlString("<process-definition name='lock mode'>"
