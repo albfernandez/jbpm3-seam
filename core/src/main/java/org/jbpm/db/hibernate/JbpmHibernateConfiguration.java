@@ -57,7 +57,7 @@ public class JbpmHibernateConfiguration implements Serializable
 
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setSuperclass(Configuration.class);
-//        proxyFactory.setInterfaces(new Class[] { Serializable.class });
+        proxyFactory.setInterfaces(new Class[] { Serializable.class });
         
         proxyFactory.setFilter(new MethodFilter() {
             @Override

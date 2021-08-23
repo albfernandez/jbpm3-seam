@@ -62,27 +62,19 @@ import org.jbpm.svc.Services;
 public class TimerCalendarTest extends AbstractDbTestCase {
 
 	private boolean createTables = true;
-
-	protected JbpmConfiguration getJbpmConfiguration() {
-		if (jbpmConfiguration == null) {
-			if (createTables) {
-				jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm.cfg.xml");
-			} else {
-				jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm-nocreate.cfg.xml");
-			}
-
-			JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-			try {
-				DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory) jbpmContext
-						.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-				JbpmSchema jbpmSchema = new JbpmSchema(persistenceServiceFactory.getJbpmHibernateConfiguration());
-				jbpmSchema.updateTable("JBPM_JOB");
-			} finally {
-				jbpmContext.close();
-			}
-		}
-		return jbpmConfiguration;
+	
+	public TimerCalendarTest() {
+		super();
 	}
+
+	
+	  protected String getJbpmTestConfig() {
+		  if (createTables) {
+			  return "org/jbpm/jbpm2958/saturday-jbpm.cfg.xml";
+		  }
+		  return "org/jbpm/jbpm2958/saturday-jbpm-nocreate.cfg.xml";
+	  }
+	
 
 	protected void setUp() throws Exception {
 		super.setUp();
