@@ -35,6 +35,10 @@ import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.graph.exe.Token;
 
 public class TaskInstanceDbTest extends AbstractDbTestCase {
+	
+	public TaskInstanceDbTest() {
+		super();
+	}
 
   public void testTaskInstanceUnrelatedToAProcess() {
     TaskInstance taskInstance = new TaskInstance("do laundry", "someoneelse");
@@ -233,13 +237,7 @@ public class TaskInstanceDbTest extends AbstractDbTestCase {
     deployProcessDefinition(processDefinition);
 
     ProcessInstance processInstance = new ProcessInstance(processDefinition);
-    try {
     processInstance.getContextInstance().setVariable("user", new User(false, true));
-    }
-    catch (Exception e) {
-    	e.printStackTrace();
-    	throw e;
-    }
     processInstance.signal();
 
     processInstance = saveAndReload(processInstance);

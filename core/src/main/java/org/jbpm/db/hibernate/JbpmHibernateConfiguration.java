@@ -38,8 +38,7 @@ import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
-public class JbpmHibernateConfiguration implements Serializable
-{
+public class JbpmHibernateConfiguration implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Configuration configurationProxy;
@@ -47,8 +46,7 @@ public class JbpmHibernateConfiguration implements Serializable
     // ALSO
     private MetadataImplementor metadataImplementor;
 
-    public JbpmHibernateConfiguration()
-    {
+    public JbpmHibernateConfiguration() {
         super();
         this.configurationProxy = createConfigurationProxy();
     }

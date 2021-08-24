@@ -316,13 +316,6 @@ public class JbpmSchema {
 
     }
 
-//	Map<String, ClassMetadata> map = sessionFactory.getAllClassMetadata();
-//	for (String entityName : map.keySet()) {
-//		SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl) sessionFactory;
-//		String tableName = ((AbstractEntityPersister) sessionFactoryImpl.getEntityPersister(entityName)).getTableName();
-//		jbpmTables.add(tableName);
-//	}
-
     return jbpmTables;
   }
 
@@ -500,21 +493,9 @@ public class JbpmSchema {
     		ddlt,
     		metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName());
 
-    	/*
-      databaseInformation = new DatabaseInformationImpl(
-        serviceRegistry,
-        serviceRegistry.getService( JdbcEnvironment.class ),
-        jdbcConnectionAccess,
-        metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName().getCatalog(),
-        metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName().getSchema()
-      );*/
     }
     catch (SQLException e) {
     	throw new RuntimeException(e);
-//      throw jdbcServices.getSqlExceptionHelper().convert(
-//        e,
-//        "Error creating DatabaseInformation for schema migration"
-//      );
     }
     return databaseInformation;
   }
@@ -562,18 +543,6 @@ public class JbpmSchema {
 
   }
 
-//  private static List<Exception> execute(String[] script, Statement statement, boolean showSql) {
-//    List<Exception> exceptions = new LinkedList<>();
-//
-//    for (int i = 0; i < script.length; i++) {
-//      String sql = script[i];
-//      Exception exception = execute(sql, statement, showSql);
-//      if (exception != null) {
-//        exceptions.add( exception );
-//      }
-//    }
-//    return exceptions;
-//  }
 
   private static Exception execute(String sql, Statement statement, boolean showSql) {
     try {

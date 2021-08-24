@@ -9,25 +9,24 @@ import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.ProcessInstance;
 
 public class ActionExpressionDbTest extends AbstractDbTestCase {
+	public ActionExpressionDbTest() {
+		super();
+	}
   
-  public static class MyActionObject implements Serializable
-  {
+  public static class MyActionObject implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public void gettingStarted()
-    {
+    public void gettingStarted() {
       ContextInstance contextInstance = ExecutionContext.currentExecutionContext().getContextInstance();
       contextInstance.setVariable("getting started", "done");
     }
 
-    public void halfWayThere()
-    {
+    public void halfWayThere() {
       ContextInstance contextInstance = ExecutionContext.currentExecutionContext().getContextInstance();
       contextInstance.setVariable("half way there", "done");
     }
 
-    public void concluding()
-    {
+    public void concluding() {
       ContextInstance contextInstance = ExecutionContext.currentExecutionContext().getContextInstance();
       contextInstance.setVariable("concluding", "done");
     }

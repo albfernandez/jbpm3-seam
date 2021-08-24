@@ -63,14 +63,8 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
   private static final long JOB_TIMEOUT = 90 * 1000;
 
   protected void setUp() throws Exception {
-	  try {
     super.setUp();
     createJbpmContext();
-	  }
-	  catch (Exception e) {
-		  e.printStackTrace();
-		  throw e;
-	  }
   }
 
   protected void runTest() throws Throwable {
@@ -119,9 +113,7 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
     	return;
     }
     
-//    JbpmSchema jbpmSchema = persistenceServiceFactory.getJbpmSchema();
     boolean hasLeftOvers = false;
-    
 
     JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
     if (jbpmHibernateConfiguration == null) {
@@ -130,12 +122,6 @@ public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
 
 
     JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration, jbpmContext);
-    try {
-    	jbpmSchema.getRowsPerTable();
-    }
-    catch (Exception e) {
-    	e.printStackTrace();
-    }
     
     Map<String, Long> rowsPerTable = jbpmSchema.getRowsPerTable();
     if (rowsPerTable != null && rowsPerTable.entrySet() != null) {

@@ -240,10 +240,7 @@ public class JbpmSession {
 
   public void popCurrentSession() {
     LinkedList stack = (LinkedList) currentJbpmSessionStack.get();
-    if ( (stack==null)
-         || (stack.isEmpty())
-         || (stack.getFirst()!=this)
-       ) {
+    if (stack == null  || stack.isEmpty()   || stack.getFirst() != this) {
       log.warn("can't pop current session: are you calling JbpmSession.close() multiple times ?");
     } else {
       stack.removeFirst();
