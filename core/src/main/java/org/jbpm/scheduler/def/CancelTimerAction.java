@@ -22,7 +22,6 @@
 package org.jbpm.scheduler.def;
 
 import org.dom4j.Element;
-
 import org.jbpm.graph.def.Action;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.jpdl.xml.JpdlXmlReader;

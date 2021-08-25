@@ -21,7 +21,7 @@
  */
 package org.jbpm.context.log;
 
-import org.jbpm.context.exe.*;
+import org.jbpm.context.exe.VariableInstance;
 
 public class VariableDeleteLog extends VariableLog {
 

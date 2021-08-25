@@ -24,7 +24,6 @@ package org.jbpm.graph.def;
 import java.util.Map;
 
 import org.dom4j.Element;
-
 import org.jbpm.JbpmConfiguration;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.instantiation.Delegation;

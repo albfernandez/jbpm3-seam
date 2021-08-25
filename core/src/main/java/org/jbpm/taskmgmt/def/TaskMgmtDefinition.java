@@ -21,11 +21,12 @@
  */
 package org.jbpm.taskmgmt.def;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.jbpm.module.def.*;
-import org.jbpm.module.exe.*;
-import org.jbpm.taskmgmt.exe.*;
+import org.jbpm.module.def.ModuleDefinition;
+import org.jbpm.module.exe.ModuleInstance;
+import org.jbpm.taskmgmt.exe.TaskMgmtInstance;
 
 /**
  * extends a process definition with information about tasks, swimlanes (for task assignment).

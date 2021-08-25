@@ -22,14 +22,8 @@
 package org.jbpm.graph.node;
 
 import org.hibernate.LockMode;
-
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.db.AbstractDbTestCase;
-import org.jbpm.db.JbpmSchema;
 import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.persistence.db.DbPersistenceServiceFactory;
-import org.jbpm.svc.Services;
 
 /**
  * Verifies the join node can be persisted correctly.
@@ -38,28 +32,14 @@ import org.jbpm.svc.Services;
  */
 public class JoinDbTest extends AbstractDbTestCase {
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/graph/node/jbpm.cfg.xml");
+	public JoinDbTest() {
+		super();
+	}
+	
+	protected String getJbpmTestConfig() {
+		return "org/jbpm/graph/node/jbpm.cfg.xml";
+	}
 
-      JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-      try {
-        DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory)
-          jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-        JbpmSchema jbpmSchema = new JbpmSchema(persistenceServiceFactory.getJbpmHibernateConfiguration());
-        jbpmSchema.updateTable("JBPM_NODE");
-      }
-      finally {
-        jbpmContext.close();
-      }
-    }
-    return jbpmConfiguration;
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
 
   public void testParentLockMode() {
     ProcessDefinition processDefinition = ProcessDefinition.parseXmlString("<process-definition name='lock mode'>"

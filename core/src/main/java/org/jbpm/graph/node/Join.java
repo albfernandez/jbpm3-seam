@@ -30,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.graph.action.Script;

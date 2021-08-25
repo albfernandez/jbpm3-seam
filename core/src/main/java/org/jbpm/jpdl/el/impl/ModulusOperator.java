@@ -55,9 +55,9 @@
 
 package org.jbpm.jpdl.el.impl;
 
-import org.jbpm.jpdl.el.ELException;
-
 import java.math.BigInteger;
+
+import org.jbpm.jpdl.el.ELException;
 
 /**
  *

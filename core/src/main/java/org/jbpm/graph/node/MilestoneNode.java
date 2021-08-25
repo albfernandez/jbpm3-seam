@@ -20,10 +20,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.jbpm.graph.node;
-import org.jbpm.graph.def.*;
+import org.jbpm.graph.def.Node;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.graph.exe.Token;
-import org.jbpm.jpdl.exe.*;
+import org.jbpm.jpdl.exe.MilestoneInstance;
 
 public class MilestoneNode extends Node {
   

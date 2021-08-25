@@ -21,9 +21,9 @@
  */
 package org.jbpm.context.def;
 
-import org.jbpm.context.exe.*;
-import org.jbpm.module.def.*;
-import org.jbpm.module.exe.*;
+import org.jbpm.context.exe.ContextInstance;
+import org.jbpm.module.def.ModuleDefinition;
+import org.jbpm.module.exe.ModuleInstance;
 
 public class ContextDefinition extends ModuleDefinition {
 

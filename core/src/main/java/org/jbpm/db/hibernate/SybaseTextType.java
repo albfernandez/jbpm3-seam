@@ -29,13 +29,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.StringHelper;
-import org.hibernate.internal.util.compare.EqualsHelper;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.EnhancedUserType;
 
@@ -81,7 +82,7 @@ public class SybaseTextType implements EnhancedUserType, Serializable {
   }
 
   public boolean equals(Object x, Object y) throws HibernateException {
-    return EqualsHelper.equals(x, y);
+    return Objects.equals(x, y);
   }
 
   public int hashCode(Object x) throws HibernateException {
@@ -256,5 +257,18 @@ public class SybaseTextType implements EnhancedUserType, Serializable {
 		
 		nullSafeSet(st, value, index);
 	
+	}
+
+	@Override
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+			throws HibernateException, SQLException {
+		return nullSafeGet(rs, names, owner);
+	}
+
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
+			throws HibernateException, SQLException {
+		nullSafeSet(st, value, index);
+		
 	}
 }

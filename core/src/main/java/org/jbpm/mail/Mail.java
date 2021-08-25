@@ -19,8 +19,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.JbpmException;
 import org.jbpm.graph.def.ActionHandler;
@@ -30,6 +28,7 @@ import org.jbpm.jpdl.el.VariableResolver;
 import org.jbpm.jpdl.el.impl.JbpmExpressionEvaluator;
 import org.jbpm.util.ClassLoaderUtil;
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class Mail implements ActionHandler {
 

@@ -38,8 +38,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
-import org.xml.sax.InputSource;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.JbpmException;
 import org.jbpm.context.def.VariableAccess;
@@ -64,6 +62,7 @@ import org.jbpm.taskmgmt.def.Swimlane;
 import org.jbpm.taskmgmt.def.Task;
 import org.jbpm.taskmgmt.def.TaskController;
 import org.jbpm.taskmgmt.def.TaskMgmtDefinition;
+import org.xml.sax.InputSource;
 
 public class JpdlXmlReader implements ProblemListener {
 

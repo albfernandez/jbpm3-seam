@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
-
 import org.jbpm.JbpmException;
 import org.jbpm.graph.action.Script;
 import org.jbpm.graph.def.ActionHandler;

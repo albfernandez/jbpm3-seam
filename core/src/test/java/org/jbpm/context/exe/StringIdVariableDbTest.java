@@ -21,67 +21,47 @@
  */
 package org.jbpm.context.exe;
 
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.context.def.ContextDefinition;
 import org.jbpm.db.AbstractDbTestCase;
-import org.jbpm.db.JbpmSchema;
-import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
-import org.jbpm.persistence.db.DbPersistenceServiceFactory;
-import org.jbpm.svc.Services;
 
 public class StringIdVariableDbTest extends AbstractDbTestCase {
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      // disable logging service to prevent logs from referencing custom object
-      jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/context/exe/jbpm.cfg.xml");
+	public StringIdVariableDbTest() {
+		super();
+	}
 
-      JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-      try {
-        DbPersistenceServiceFactory persistenceServiceFactory =
-          (DbPersistenceServiceFactory) jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-        JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
+	protected String getJbpmTestConfig() {
+		return "org/jbpm/context/exe/jbpm.cfg.xml";
+	}
 
-        JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration);
-        jbpmSchema.createTable("JBPM_TEST_CUSTOMSTRINGID");
-      }
-      finally {
-        jbpmContext.close();
-      }
-    }
-    return jbpmConfiguration;
-  }
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		jbpmConfiguration.close();
+	}
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
+	public void testCustomVariableClassWithStringId() {
+		// create and save process definition
+		ProcessDefinition processDefinition = new ProcessDefinition(getName());
+		processDefinition.addDefinition(new ContextDefinition());
+		deployProcessDefinition(processDefinition);
 
-  public void testCustomVariableClassWithStringId() {
-    // create and save process definition
-    ProcessDefinition processDefinition = new ProcessDefinition(getName());
-    processDefinition.addDefinition(new ContextDefinition());
-    deployProcessDefinition(processDefinition);
+		// create process instance
+		ProcessInstance processInstance = new ProcessInstance(processDefinition);
+		// create custom object
+		CustomStringClass customStringObject = new CustomStringClass("my stuff");
+		processInstance.getContextInstance().setVariable("custom", customStringObject);
 
-    // create process instance
-    ProcessInstance processInstance = new ProcessInstance(processDefinition);
-    // create custom object
-    CustomStringClass customStringObject = new CustomStringClass("my stuff");
-    processInstance.getContextInstance().setVariable("custom", customStringObject);
+		// save process instance
+		processInstance = saveAndReload(processInstance);
+		// get custom object from variables
+		customStringObject = (CustomStringClass) processInstance.getContextInstance().getVariable("custom");
+		assertNotNull(customStringObject);
+		assertEquals("my stuff", customStringObject.getName());
 
-    // save process instance
-    processInstance = saveAndReload(processInstance);
-    // get custom object from variables
-    customStringObject = (CustomStringClass) processInstance.getContextInstance()
-      .getVariable("custom");
-    assertNotNull(customStringObject);
-    assertEquals("my stuff", customStringObject.getName());
-
-    // delete custom object
-    processInstance.getContextInstance().deleteVariable("custom");
-    session.delete(customStringObject);
-  }
+		// delete custom object
+		processInstance.getContextInstance().deleteVariable("custom");
+		session.delete(customStringObject);
+	}
 }

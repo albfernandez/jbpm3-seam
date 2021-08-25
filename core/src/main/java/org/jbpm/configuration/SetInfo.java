@@ -25,9 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
 import org.jbpm.util.XmlUtil;
+import org.w3c.dom.Element;
 
 public class SetInfo extends AbstractObjectInfo {
 

@@ -21,7 +21,7 @@
  */
 package org.jbpm.graph.log;
 
-import org.jbpm.logging.log.*;
+import org.jbpm.logging.log.ProcessLog;
 
 public class ProcessInstanceCreateLog extends ProcessLog {
 

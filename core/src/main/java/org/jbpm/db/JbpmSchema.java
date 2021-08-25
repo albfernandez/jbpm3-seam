@@ -35,6 +35,7 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,9 +44,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.persistence.metamodel.EntityType;
+
+import org.hibernate.Metamodel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -53,19 +58,28 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.connections.spi.JdbcConnectionAccess;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
+import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.mapping.Table;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.resource.transaction.spi.DdlTransactionIsolator;
+import org.hibernate.resource.transaction.spi.TransactionCoordinatorBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
+import org.hibernate.tool.schema.TargetType;
 import org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl;
 import org.hibernate.tool.schema.extract.spi.DatabaseInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
+import org.hibernate.tool.schema.internal.HibernateSchemaManagementTool.JdbcContextImpl;
+import org.hibernate.tool.schema.internal.exec.JdbcConnectionAccessProvidedConnectionImpl;
+import org.hibernate.tool.schema.internal.exec.JdbcContext;
+import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
 import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 import org.jbpm.logging.db.JDBCExceptionReporter;
@@ -92,10 +106,27 @@ public class JbpmSchema {
 
   private static final String[] TABLE_TYPES = { "TABLE" };
 
+  
+      
   public JbpmSchema(JbpmHibernateConfiguration jbpmHibernateConfiguration) {
+	  super();
+	  this.delimiter = ";";
       this.jbpmHibernateConfiguration = jbpmHibernateConfiguration;
-      this.delimiter = ";";
   }
+  
+  JbpmSchema(JbpmHibernateConfiguration jbpmHibernateConfiguration, JbpmContext context) {
+	  super();
+	  this.delimiter = ";";
+	  this.session = context.getSession();
+	  this.sessionImplementor = (SessionImplementor) this.session;
+	  this.sessionFactory = session.getSessionFactory();
+	  
+	  this.jbpmHibernateConfiguration = jbpmHibernateConfiguration;
+	  this.metadataImplementor = this.jbpmHibernateConfiguration.getMetadataImplementor();
+	  this.metadataSources = this.jbpmHibernateConfiguration.getMetadataSources();
+  }
+  
+
 
   private synchronized void configure() {
     if (sessionFactory == null) {
@@ -139,10 +170,16 @@ public class JbpmSchema {
 
     configure();
 
-    SchemaExport schemaExport = new SchemaExport(metadataImplementor);
+    SchemaExport schemaExport = new SchemaExport();
+    
     schemaExport.setOutputFile(exportToFile);
     schemaExport.setDelimiter(delimiter);
-    schemaExport.drop(true, exportToDb);
+    EnumSet<TargetType> list = EnumSet.of(TargetType.SCRIPT);
+    if (exportToDb) {
+    	list.add(TargetType.DATABASE);
+    }
+   	schemaExport.drop(list, metadataImplementor);
+    
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaExport.getExceptions();
@@ -163,10 +200,14 @@ public class JbpmSchema {
 
     configure();
 
-    SchemaExport schemaExport = new SchemaExport(metadataImplementor);
+    SchemaExport schemaExport = new SchemaExport();
     schemaExport.setOutputFile(exportToFile);
     schemaExport.setDelimiter(delimiter);
-    schemaExport.create(true, exportToDb);
+    EnumSet<TargetType> list = EnumSet.of(TargetType.SCRIPT);
+    if (exportToDb) {
+    	list.add(TargetType.DATABASE);
+    }
+    schemaExport.create(list, metadataImplementor);
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaExport.getExceptions();
@@ -187,10 +228,14 @@ public class JbpmSchema {
 
     configure();
 
-    SchemaExport schemaExportForDrop = new SchemaExport(metadataImplementor);
+    SchemaExport schemaExportForDrop = new SchemaExport();
     schemaExportForDrop.setOutputFile(exportToFile);
     schemaExportForDrop.setDelimiter(delimiter);
-    schemaExportForDrop.execute( true, exportToDb, false, false );
+    EnumSet<TargetType> list = EnumSet.of(TargetType.SCRIPT);
+    if (exportToDb) {
+    	list =  EnumSet.of(TargetType.DATABASE);
+    }
+    schemaExportForDrop.execute(list, Action.DROP, metadataImplementor);
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaExportForDrop.getExceptions();
@@ -211,10 +256,14 @@ public class JbpmSchema {
 
     configure();
 
-    SchemaUpdate schemaUpdate = new SchemaUpdate(metadataImplementor);
+    SchemaUpdate schemaUpdate = new SchemaUpdate();
     schemaUpdate.setOutputFile(exportToFile);
     schemaUpdate.setDelimiter(delimiter);
-    schemaUpdate.execute(true, exportToDb);
+    EnumSet<TargetType> list = EnumSet.of(TargetType.SCRIPT);
+    if (exportToDb) {
+    	list.add(TargetType.DATABASE);
+    }
+    schemaUpdate.execute(list, metadataImplementor);
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaUpdate.getExceptions();
@@ -247,12 +296,24 @@ public class JbpmSchema {
     configure();
 
     Set<String> jbpmTables = new HashSet<>();
+    
+    Metamodel metamodel = sessionFactory.getMetamodel();
 
-    Map<String, ClassMetadata>  map = sessionFactory.getAllClassMetadata();
-    for(String entityName : map.keySet()){
-        SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl) sessionFactory;
-        String tableName = ((AbstractEntityPersister)sessionFactoryImpl.getEntityPersister(entityName)).getTableName();
-        jbpmTables.add(tableName);
+    
+    for (EntityType<?> entityType: metamodel.getEntities()) {
+    	try {
+	    	Class<?> modelClazz = entityType.getJavaType();
+	    	EntityPersister persister = sessionImplementor.getEntityPersister(null, modelClazz.getDeclaredConstructor().newInstance());
+	    	if (persister instanceof AbstractEntityPersister) {
+	            AbstractEntityPersister persisterImpl = (AbstractEntityPersister) persister;
+	            String tableName = persisterImpl.getTableName();
+	            jbpmTables.add(tableName);
+	        }
+    	}
+    	catch (Exception ignored) {
+    		// nop
+    	}
+
     }
 
     return jbpmTables;
@@ -389,9 +450,14 @@ public class JbpmSchema {
               JbpmSchema.execute(sql, statement, showSql);
             }
             else {
-              Iterator scripts = table.sqlAlterStrings( getDialect(), metadataImplementor, tableInformation, getDefaultCatalog(), getDefaultSchema() );
-              for (Iterator script = scripts; script.hasNext();) {
-                  String sql = (String) script.next();
+              Iterator<String> scripts = table.sqlAlterStrings(
+            		  getDialect(), 
+            		  metadataImplementor, 
+            		  tableInformation, 
+            		  Identifier.toIdentifier(getDefaultCatalog()), 
+            		  Identifier.toIdentifier(getDefaultSchema()));
+              for (Iterator<String> script = scripts; script.hasNext();) {
+                  String sql = script.next();
                   JbpmSchema.execute(sql, statement, showSql);
               }
             }
@@ -412,27 +478,29 @@ public class JbpmSchema {
 //    final ConfigurationService cfgService = serviceRegistry.getService( ConfigurationService.class );
 //    final SchemaManagementTool schemaManagementTool = serviceRegistry.getService( SchemaManagementTool.class );
 //    final SchemaMigrator schemaMigrator = schemaManagementTool.getSchemaMigrator( cfgService.getSettings() );
-    final JdbcServices jdbcServices = serviceRegistry.getService( JdbcServices.class );
-    final JdbcConnectionAccess jdbcConnectionAccess = jdbcServices.getBootstrapJdbcConnectionAccess();
+//    final JdbcServices jdbcServices = serviceRegistry.getService( JdbcServices.class );
+//    final JdbcConnectionAccess jdbcConnectionAccess = jdbcServices.getBootstrapJdbcConnectionAccess();
 
     final DatabaseInformation databaseInformation;
+    DdlTransactionIsolator ddlt = null;
     try {
-      databaseInformation = new DatabaseInformationImpl(
-        serviceRegistry,
-        serviceRegistry.getService( JdbcEnvironment.class ),
-        jdbcConnectionAccess,
-        metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName().getCatalog(),
-        metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName().getSchema()
-      );
+    	JdbcContext ctx = new JdbcContextBuilder (serviceRegistry).buildJdbcContext();
+    	ddlt = getDdlTransactionIsolator(ctx);
+    	
+    	databaseInformation = new DatabaseInformationImpl(
+    		serviceRegistry, 
+    		serviceRegistry.getService(JdbcEnvironment.class), 
+    		ddlt,
+    		metadataImplementor.getDatabase().getDefaultNamespace().getPhysicalName());
+
     }
     catch (SQLException e) {
-      throw jdbcServices.getSqlExceptionHelper().convert(
-        e,
-        "Error creating DatabaseInformation for schema migration"
-      );
+    	throw new RuntimeException(e);
     }
     return databaseInformation;
   }
+  
+
 
   private Table findTableMapping(String tableName) {
 
@@ -475,18 +543,6 @@ public class JbpmSchema {
 
   }
 
-//  private static List<Exception> execute(String[] script, Statement statement, boolean showSql) {
-//    List<Exception> exceptions = new LinkedList<>();
-//
-//    for (int i = 0; i < script.length; i++) {
-//      String sql = script[i];
-//      Exception exception = execute(sql, statement, showSql);
-//      if (exception != null) {
-//        exceptions.add( exception );
-//      }
-//    }
-//    return exceptions;
-//  }
 
   private static Exception execute(String sql, Statement statement, boolean showSql) {
     try {
@@ -619,5 +675,77 @@ public class JbpmSchema {
     configure();
     return sessionImplementor;
   }
+  
+  private static class JdbcContextBuilder {
+		private final ServiceRegistry serviceRegistry;
+		private final SqlStatementLogger sqlStatementLogger;
+		private final SqlExceptionHelper sqlExceptionHelper;
+
+		private JdbcConnectionAccess jdbcConnectionAccess;
+		private Dialect dialect;
+
+		public JdbcContextBuilder(ServiceRegistry serviceRegistry) {
+			this.serviceRegistry = serviceRegistry;
+			final JdbcServices jdbcServices = serviceRegistry.getService( JdbcServices.class );
+			this.sqlStatementLogger = jdbcServices.getSqlStatementLogger();
+			this.sqlExceptionHelper = jdbcServices.getSqlExceptionHelper();
+
+			this.dialect = jdbcServices.getJdbcEnvironment().getDialect();
+			this.jdbcConnectionAccess = jdbcServices.getBootstrapJdbcConnectionAccess();
+		}
+
+		public JdbcContext buildJdbcContext() {
+			return new JdbcContextImpl( jdbcConnectionAccess, dialect, sqlStatementLogger, sqlExceptionHelper, serviceRegistry );
+		}
+	}
+  public static class JdbcContextImpl implements JdbcContext {
+		private final JdbcConnectionAccess jdbcConnectionAccess;
+		private final Dialect dialect;
+		private final SqlStatementLogger sqlStatementLogger;
+		private final SqlExceptionHelper sqlExceptionHelper;
+		private final ServiceRegistry serviceRegistry;
+
+		private JdbcContextImpl(
+				JdbcConnectionAccess jdbcConnectionAccess,
+				Dialect dialect,
+				SqlStatementLogger sqlStatementLogger,
+				SqlExceptionHelper sqlExceptionHelper,
+				ServiceRegistry serviceRegistry) {
+			this.jdbcConnectionAccess = jdbcConnectionAccess;
+			this.dialect = dialect;
+			this.sqlStatementLogger = sqlStatementLogger;
+			this.sqlExceptionHelper = sqlExceptionHelper;
+			this.serviceRegistry = serviceRegistry;
+		}
+
+		@Override
+		public JdbcConnectionAccess getJdbcConnectionAccess() {
+			return jdbcConnectionAccess;
+		}
+
+		@Override
+		public Dialect getDialect() {
+			return dialect;
+		}
+
+		@Override
+		public SqlStatementLogger getSqlStatementLogger() {
+			return sqlStatementLogger;
+		}
+
+		@Override
+		public SqlExceptionHelper getSqlExceptionHelper() {
+			return sqlExceptionHelper;
+		}
+
+		@Override
+		public ServiceRegistry getServiceRegistry() {
+			return serviceRegistry;
+		}
+	}
+  
+  private DdlTransactionIsolator getDdlTransactionIsolator(JdbcContext jdbcContext) {
+	  	return jdbcContext.getServiceRegistry().getService( TransactionCoordinatorBuilder.class ).buildDdlTransactionIsolator( jdbcContext );
+	}
 
 }

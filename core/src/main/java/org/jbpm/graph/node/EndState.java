@@ -22,7 +22,6 @@
 package org.jbpm.graph.node;
 
 import org.dom4j.Element;
-
 import org.jbpm.graph.def.Event;
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;

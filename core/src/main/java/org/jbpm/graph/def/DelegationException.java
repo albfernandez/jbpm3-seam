@@ -22,7 +22,7 @@
 package org.jbpm.graph.def;
 
 import org.jbpm.JbpmException;
-import org.jbpm.graph.exe.*;
+import org.jbpm.graph.exe.ExecutionContext;
 
 public class DelegationException extends JbpmException {
 

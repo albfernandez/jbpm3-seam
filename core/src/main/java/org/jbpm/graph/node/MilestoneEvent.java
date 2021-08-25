@@ -21,9 +21,9 @@
  */
 package org.jbpm.graph.node;
 
-import org.jbpm.graph.def.*;
+import org.jbpm.graph.def.ActionHandler;
 import org.jbpm.graph.exe.ExecutionContext;
-import org.jbpm.jpdl.exe.*;
+import org.jbpm.jpdl.exe.MilestoneInstance;
 
 public class MilestoneEvent implements ActionHandler {
 

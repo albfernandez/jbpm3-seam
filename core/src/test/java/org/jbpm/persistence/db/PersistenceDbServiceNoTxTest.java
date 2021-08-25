@@ -84,7 +84,13 @@ public class PersistenceDbServiceNoTxTest extends AbstractJbpmTestCase {
   public void testDefaultRollbackAfterGetConnection() {
     jbpmContext.getSession();
     jbpmContext.setRollbackOnly();
+    try {
     jbpmContext.getConnection();
+    }
+    catch (Exception e) {
+    	e.printStackTrace();
+    	throw e;
+    }
     try {
       jbpmContext.close();
       fail("expected exception");

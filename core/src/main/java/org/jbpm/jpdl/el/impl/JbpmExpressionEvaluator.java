@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.graph.exe.ExecutionContext;
 import org.jbpm.jpdl.el.ExpressionEvaluator;
-import org.jbpm.jpdl.el.VariableResolver;
 import org.jbpm.jpdl.el.FunctionMapper;
+import org.jbpm.jpdl.el.VariableResolver;
 
 public class JbpmExpressionEvaluator {
 

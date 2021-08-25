@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.logging.LoggingService;
@@ -106,7 +105,9 @@ public class Services implements Serializable {
     }
     this.serviceFactories = serviceFactories;
     this.services = new HashMap(serviceFactories.size());
-    if (saveOperations != null) this.saveOperations = saveOperations;
+    if (saveOperations != null) {
+    	this.saveOperations = saveOperations;
+    }
   }
 
   /** @deprecated use {@link #Services(Map, List)} instead */

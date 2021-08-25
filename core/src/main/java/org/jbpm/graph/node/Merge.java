@@ -21,10 +21,12 @@
  */
 package org.jbpm.graph.node;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.jbpm.graph.def.*;
-import org.jbpm.graph.exe.*;
+import org.jbpm.graph.def.Node;
+import org.jbpm.graph.exe.ExecutionContext;
+import org.jbpm.graph.exe.Token;
 
 /**
  * TODO is the merge node usefull ? 

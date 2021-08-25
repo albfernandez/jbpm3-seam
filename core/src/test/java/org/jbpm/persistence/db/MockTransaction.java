@@ -66,10 +66,20 @@ public class MockTransaction implements Transaction {
     }
   }
 
-  @Override
-  public void markRollbackOnly()
-  {
-      throw new UnsupportedOperationException();
-  }
+	@Override
+	public void markRollbackOnly() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setRollbackOnly() {
+		 throw new UnsupportedOperationException();
+		
+	}
+	
+	@Override
+	public boolean getRollbackOnly() {
+		 throw new UnsupportedOperationException();
+	}
 
 }

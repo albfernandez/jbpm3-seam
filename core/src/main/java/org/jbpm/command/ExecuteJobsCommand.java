@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.db.JobSession;
 import org.jbpm.graph.exe.ProcessInstance;

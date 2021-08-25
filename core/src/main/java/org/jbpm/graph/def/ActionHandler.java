@@ -21,9 +21,9 @@
  */
 package org.jbpm.graph.def;
 
-import java.io.*;
+import java.io.Serializable;
 
-import org.jbpm.graph.exe.*;
+import org.jbpm.graph.exe.ExecutionContext;
 
 public interface ActionHandler extends Serializable {
   

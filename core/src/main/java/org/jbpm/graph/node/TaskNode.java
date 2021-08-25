@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
-
 import org.jbpm.graph.def.Node;
 import org.jbpm.graph.def.Transition;
 import org.jbpm.graph.exe.ExecutionContext;

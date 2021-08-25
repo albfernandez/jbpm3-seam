@@ -32,7 +32,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.jbpm.JbpmException;
 import org.jbpm.persistence.db.DbPersistenceService;

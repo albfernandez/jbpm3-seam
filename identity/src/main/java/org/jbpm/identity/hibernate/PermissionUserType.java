@@ -30,6 +30,7 @@ import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
@@ -141,4 +142,36 @@ public class PermissionUserType implements CompositeUserType {
       throws HibernateException {
     return original;
   }
+
+@Override
+public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+		throws HibernateException, SQLException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
+		throws HibernateException, SQLException {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

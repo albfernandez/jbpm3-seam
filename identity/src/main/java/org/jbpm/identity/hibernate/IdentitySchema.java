@@ -27,6 +27,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -37,6 +38,8 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.jdbc.Work;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
+import org.hibernate.tool.schema.TargetType;
 import org.jbpm.JbpmException;
 import org.jbpm.db.hibernate.JbpmHibernateConfiguration;
 import org.jbpm.logging.db.JDBCExceptionReporter;
@@ -141,10 +144,15 @@ public class IdentitySchema {
 
     configure();
 
-    SchemaExport schemaExport = new SchemaExport(metadataImplementor);
+    SchemaExport schemaExport = new SchemaExport();
     schemaExport.setOutputFile(exportToFile);
     schemaExport.setDelimiter(delimiter);
-    schemaExport.drop(true, exportToDb);
+    if (exportToDb) {
+    	schemaExport.drop(EnumSet.of(TargetType.DATABASE), metadataImplementor);
+    }
+    else {
+    	schemaExport.drop(EnumSet.of(TargetType.SCRIPT), metadataImplementor);
+    }
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaExport.getExceptions();
@@ -165,10 +173,16 @@ public class IdentitySchema {
 
       configure();
 
-      SchemaExport schemaExport = new SchemaExport(metadataImplementor);
+      SchemaExport schemaExport = new SchemaExport();
       schemaExport.setOutputFile(exportToFile);
       schemaExport.setDelimiter(delimiter);
-      schemaExport.create(true, exportToDb);
+      
+      if (exportToDb) {
+      	schemaExport.create(EnumSet.of(TargetType.DATABASE), metadataImplementor);
+      }
+      else {
+      	schemaExport.create(EnumSet.of(TargetType.SCRIPT), metadataImplementor);
+      }
 
       @SuppressWarnings( "unchecked" )
       List<Exception> schemaExceptions = schemaExport.getExceptions();
@@ -189,10 +203,16 @@ public class IdentitySchema {
 
     configure();
 
-    SchemaExport schemaExportForDrop = new SchemaExport(metadataImplementor);
+    SchemaExport schemaExportForDrop = new SchemaExport();
     schemaExportForDrop.setOutputFile(exportToFile);
     schemaExportForDrop.setDelimiter(delimiter);
-    schemaExportForDrop.execute( true, exportToDb, false, false );
+    
+    if (exportToDb) {
+    	schemaExportForDrop.execute(EnumSet.of(TargetType.DATABASE), Action.BOTH,metadataImplementor);
+    }
+    else {
+    	schemaExportForDrop.execute(EnumSet.of(TargetType.SCRIPT), Action.BOTH,metadataImplementor);
+    }
 
     @SuppressWarnings( "unchecked" )
     List<Exception> schemaExceptions = schemaExportForDrop.getExceptions();

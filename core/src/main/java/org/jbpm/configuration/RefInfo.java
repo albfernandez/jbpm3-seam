@@ -21,9 +21,8 @@
  */
 package org.jbpm.configuration;
 
-import org.w3c.dom.Element;
-
 import org.jbpm.JbpmException;
+import org.w3c.dom.Element;
 
 public class RefInfo extends AbstractObjectInfo {
 

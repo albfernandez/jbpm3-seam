@@ -21,8 +21,9 @@
  */
 package org.jbpm.graph.log;
 
-import org.jbpm.graph.def.*;
-import org.jbpm.logging.log.*;
+import org.jbpm.graph.def.Node;
+import org.jbpm.graph.def.Transition;
+import org.jbpm.logging.log.CompositeLog;
 
 public class TransitionLog extends CompositeLog {
 

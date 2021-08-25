@@ -60,93 +60,78 @@ import org.jbpm.svc.Services;
  * @author Alejandro Guizar
  */
 public class TimerCalendarTest extends AbstractDbTestCase {
-	
 
 	private boolean createTables = true;
+	
+	public TimerCalendarTest() {
+		super();
+	}
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-    	if (createTables) {
-    		jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm.cfg.xml");
-    	}
-    	else {
-    		jbpmConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/saturday-jbpm-nocreate.cfg.xml");
-    	}
+	
+	  protected String getJbpmTestConfig() {
+		  if (createTables) {
+			  return "org/jbpm/jbpm2958/saturday-jbpm.cfg.xml";
+		  }
+		  return "org/jbpm/jbpm2958/saturday-jbpm-nocreate.cfg.xml";
+	  }
+	
 
-      JbpmContext jbpmContext = jbpmConfiguration.createJbpmContext();
-      try {
-        DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory) jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-        JbpmSchema jbpmSchema = new JbpmSchema(persistenceServiceFactory.getJbpmHibernateConfiguration());
-        jbpmSchema.updateTable("JBPM_JOB");
-      }
-      finally {
-        jbpmContext.close();
-      }
-    }
-    return jbpmConfiguration;
-  }
+	protected void setUp() throws Exception {
+		super.setUp();
 
-  protected void setUp() throws Exception {
-    super.setUp();
+		ProcessDefinition processDefinition = ProcessDefinition.parseXmlResource("org/jbpm/jbpm2958/processdefinition.xml");
+		deployProcessDefinition(processDefinition);
+	}
 
-    ProcessDefinition processDefinition = ProcessDefinition.parseXmlResource("org/jbpm/jbpm2958/processdefinition.xml");
-    deployProcessDefinition(processDefinition);
-  }
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		jbpmConfiguration.close();
+	}
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
+	public void testTimerCalendarResource() {
+		// baseDate is a Friday, one hour before close of business
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2010, Calendar.OCTOBER, 8, 16, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		Date baseDate = calendar.getTime();
 
-  public void testTimerCalendarResource() {
-    // baseDate is a Friday, one hour before close of business
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(2010, Calendar.OCTOBER, 8, 16, 0, 0);
-    calendar.set(Calendar.MILLISECOND, 0);
-    Date baseDate = calendar.getTime();
+		// processInstance schedules a timer due on baseDate
+		// in jbpmConfiguration, Saturday is a work day
+		ProcessInstance processInstance = jbpmContext.newProcessInstanceForUpdate("jbpm2958");
+		processInstance.getContextInstance().setVariable("baseDate", baseDate);
+		processInstance.signal();
 
-    // processInstance schedules a timer due on baseDate
-    // in jbpmConfiguration, Saturday is a work day
-    ProcessInstance processInstance = jbpmContext.newProcessInstanceForUpdate("jbpm2958");
-    processInstance.getContextInstance().setVariable("baseDate", baseDate);
-    processInstance.signal();
+		closeJbpmContext();
+		try {
+			// in standardConfiguration, Saturday is NOT a work day
+			JbpmConfiguration standardConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/jbpm.cfg.xml");
+			JbpmContext standardContext = standardConfiguration.createJbpmContext();
+			try {
+				Timer timer = (Timer) standardContext.getSession().createCriteria(Timer.class).uniqueResult();
+				timer.execute(standardContext);
+			} catch (Exception e) {
+				standardContext.setRollbackOnly();
+				fail(e.getMessage());
+			} finally {
+				standardContext.close();
+				standardConfiguration.close();
+			}
+		} finally {
+			createTables = false;
+			createJbpmContext();
+		}
 
-    closeJbpmContext();
-    try {
-      // in standardConfiguration, Saturday is NOT a work day
-      JbpmConfiguration standardConfiguration = JbpmConfiguration.parseResource("org/jbpm/jbpm2958/jbpm.cfg.xml");
-      JbpmContext standardContext = standardConfiguration.createJbpmContext();
-      try {
-        Timer timer = (Timer) standardContext.getSession()
-          .createCriteria(Timer.class)
-          .uniqueResult();
-        timer.execute(standardContext);
-      }
-      catch (Exception e) {
-        standardContext.setRollbackOnly();
-        fail(e.getMessage());
-      }
-      finally {
-        standardContext.close();
-        standardConfiguration.close();
-      }
-    }
-    finally {
-    	createTables = false;
-      createJbpmContext();
-    }
+		calendar.add(Calendar.HOUR, 2);
+		// there are 16 hours between 17:00 and 9:00
+		calendar.add(Calendar.HOUR, 16);
+		// repeatDate is a Saturday
+		Date repeatDate = calendar.getTime();
 
-    calendar.add(Calendar.HOUR, 2);
-    // there are 16 hours between 17:00 and 9:00
-    calendar.add(Calendar.HOUR, 16);
-    // repeatDate is a Saturday
-    Date repeatDate = calendar.getTime();
+		Timer timer = (Timer) session.createCriteria(Timer.class).uniqueResult();
+		assertEquals(repeatDate, new Date(timer.getDueDate().getTime()));
 
-    Timer timer = (Timer) session.createCriteria(Timer.class).uniqueResult();
-    assertEquals(repeatDate, new Date(timer.getDueDate().getTime()));
-
-    processInstance = jbpmContext.loadProcessInstanceForUpdate(processInstance.getId());
-    processInstance.signal();
-    assert processInstance.hasEnded() : "expected " + processInstance + " to have ended";
-  }
+		processInstance = jbpmContext.loadProcessInstanceForUpdate(processInstance.getId());
+		processInstance.signal();
+		assert processInstance.hasEnded() : "expected " + processInstance + " to have ended";
+	}
 }

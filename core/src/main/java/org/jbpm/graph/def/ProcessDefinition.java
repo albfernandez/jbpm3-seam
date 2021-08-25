@@ -36,8 +36,6 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xml.sax.InputSource;
-
 import org.jbpm.JbpmConfiguration.Configs;
 import org.jbpm.JbpmContext;
 import org.jbpm.JbpmException;
@@ -52,6 +50,7 @@ import org.jbpm.jpdl.xml.JpdlXmlReader;
 import org.jbpm.module.def.ModuleDefinition;
 import org.jbpm.taskmgmt.def.TaskMgmtDefinition;
 import org.jbpm.util.ClassLoaderUtil;
+import org.xml.sax.InputSource;
 
 public class ProcessDefinition extends GraphElement implements NodeCollection {
 

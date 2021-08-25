@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.persistence.JbpmPersistenceException;
 import org.jbpm.taskmgmt.exe.TaskInstance;

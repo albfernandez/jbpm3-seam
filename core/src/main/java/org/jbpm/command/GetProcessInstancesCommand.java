@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Query;
-
 import org.jbpm.JbpmContext;
 import org.jbpm.graph.exe.ProcessInstance;
 
