@@ -19,7 +19,7 @@ mvn clean package verify
 mvn clean package install deploy
 git add -A
 git commit -S -m 'Release <3.2.16>'
-git tag -a <3.2.16> -m "Tagging release <3.2.16>"
+git tag -a <v.3.2.16> -m "Tagging release <3.2.16>"
 git push
 git push --tags
 ```
