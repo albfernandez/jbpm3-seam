@@ -39,189 +39,181 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
 public class JbpmHibernateConfiguration implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private Configuration configurationProxy;
+	private Configuration configurationProxy;
 
-    // ALSO
-    private MetadataImplementor metadataImplementor;
+	// ALSO
+	private MetadataImplementor metadataImplementor;
 
-    public JbpmHibernateConfiguration() {
-        super();
-        this.configurationProxy = createConfigurationProxy();
-    }
+	public JbpmHibernateConfiguration() {
+		super();
+		this.configurationProxy = createConfigurationProxy();
+	}
 
-    protected Configuration createConfigurationProxy() {
+	protected Configuration createConfigurationProxy() {
 
-        ProxyFactory proxyFactory = new ProxyFactory();
-        proxyFactory.setSuperclass(Configuration.class);
-        proxyFactory.setInterfaces(new Class[] { Serializable.class });
-        
-        proxyFactory.setFilter(new MethodFilter() {
-            @Override
-            public boolean isHandled(Method m) {
-                return (m.getName().equals("buildSessionFactory") && m.getParameterTypes().length == 1);
-            }
-        });
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setSuperclass(Configuration.class);
+		proxyFactory.setInterfaces(new Class[] { Serializable.class });
 
-        MethodHandler methodHandler = new MethodHandler() {
+		proxyFactory.setFilter(new MethodFilter() {
+			@Override
+			public boolean isHandled(Method m) {
+				return (m.getName().equals("buildSessionFactory") && m.getParameterTypes().length == 1);
+			}
+		});
 
-            @Override
-            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+		MethodHandler methodHandler = new MethodHandler() {
 
-                long start = System.currentTimeMillis();
-                try {
-//                    return proceed.invoke(self, args);
-                    return buildSessionFactory();
-                } catch (Exception e ) {
-                    throw new RuntimeException( e );
-                } finally {
+			@Override
+			public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
 
-                    long end = System.currentTimeMillis();
-                    System.out.println("Execution time: " + (end - start)
-                            + " ms, method: " + proceed);
-                }
+				long start = System.currentTimeMillis();
+				try {
+					//                    return proceed.invoke(self, args);
+					return buildSessionFactory();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} finally {
 
-            }
-        };
+					long end = System.currentTimeMillis();
+					System.out.println("Execution time: " + (end - start) + " ms, method: " + proceed);
+				}
 
-        try
-        {
-            // Default Constructor for Configuration - new Configuration()
-            return (Configuration) proxyFactory.create(new Class[0], new Object[0], methodHandler);
-        }
-        catch ( RuntimeException e )
-        {
-            throw e;
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
+			}
+		};
 
-    /**
-     *
-     * @see Configuration#buildSessionFactory()
-     * @see Configuration#buildSessionFactory(ServiceRegistry)
-     *
-     */
-    public SessionFactory buildSessionFactory() throws HibernateException {
+		try {
+			// Default Constructor for Configuration - new Configuration()
+			Configuration config =  (Configuration) proxyFactory.create(new Class[0], new Object[0], methodHandler);
+			return config;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-        Configuration configuration = configurationProxy;
+	/**
+	 *
+	 * @see Configuration#buildSessionFactory()
+	 * @see Configuration#buildSessionFactory(ServiceRegistry)
+	 *
+	 */
+	public SessionFactory buildSessionFactory() throws HibernateException {
 
-        if (this.metadataImplementor == null) {
+		Configuration configuration = configurationProxy;
 
-            StandardServiceRegistryBuilder standardServiceRegistryBuilder = getFieldValueFromParent( configuration, "standardServiceRegistryBuilder" );
-            Properties properties = getFieldValueFromParent( configuration, "properties" );
-            standardServiceRegistryBuilder.applySettings( properties );
-            ServiceRegistry serviceRegistry = standardServiceRegistryBuilder.build();
+		if (this.metadataImplementor == null) {
 
-            MetadataSources metadataSources = getFieldValueFromParent( configuration, "metadataSources" );
-            ImplicitNamingStrategy implicitNamingStrategy = getFieldValueFromParent( configuration, "implicitNamingStrategy" );
-            PhysicalNamingStrategy physicalNamingStrategy = getFieldValueFromParent( configuration, "physicalNamingStrategy" );
-            SharedCacheMode sharedCacheMode = getFieldValueFromParent( configuration, "sharedCacheMode" );
-            List<TypeContributor> typeContributorRegistrations = getFieldValueFromParent( configuration, "typeContributorRegistrations" );
-            List<BasicType> basicTypes = getFieldValueFromParent( configuration, "basicTypes" );
-//            Map<String, NamedSQLQueryDefinition> namedSqlQueries = getFieldValueFromParent( configuration, "namedSqlQueries" );
-            Map<String, SQLFunction> sqlFunctions = getFieldValueFromParent( configuration, "sqlFunctions" );
-            List<AuxiliaryDatabaseObject> auxiliaryDatabaseObjectList = getFieldValueFromParent( configuration, "auxiliaryDatabaseObjectList" );
-            HashMap<Class,AttributeConverterDefinition> attributeConverterDefinitionsByClass = getFieldValueFromParent( configuration, "attributeConverterDefinitionsByClass" );
+			StandardServiceRegistryBuilder standardServiceRegistryBuilder = getFieldValueFromParent(configuration,
+					"standardServiceRegistryBuilder");
+			Properties properties = getFieldValueFromParent(configuration, "properties");
+			standardServiceRegistryBuilder.applySettings(properties);
+			ServiceRegistry serviceRegistry = standardServiceRegistryBuilder.build();
 
-            final MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder( (StandardServiceRegistry) serviceRegistry );
-            if ( implicitNamingStrategy != null ) {
-                metadataBuilder.applyImplicitNamingStrategy( implicitNamingStrategy );
-            }
-            if ( physicalNamingStrategy != null ) {
-                metadataBuilder.applyPhysicalNamingStrategy( physicalNamingStrategy );
-            }
-            if ( sharedCacheMode != null ) {
-                metadataBuilder.applySharedCacheMode( sharedCacheMode );
-            }
-            if ( !typeContributorRegistrations.isEmpty() ) {
-                for ( TypeContributor typeContributor : typeContributorRegistrations ) {
-                    metadataBuilder.applyTypes( typeContributor );
-                }
-            }
-            if ( !basicTypes.isEmpty() ) {
-                for ( BasicType basicType : basicTypes ) {
-                    metadataBuilder.applyBasicType( basicType );
-                }
-            }
-            if ( sqlFunctions != null ) {
-                for ( Map.Entry<String, SQLFunction> entry : sqlFunctions.entrySet() ) {
-                    metadataBuilder.applySqlFunction( entry.getKey(), entry.getValue() );
-                }
-            }
-            if ( auxiliaryDatabaseObjectList != null ) {
-                for ( AuxiliaryDatabaseObject auxiliaryDatabaseObject : auxiliaryDatabaseObjectList ) {
-                    metadataBuilder.applyAuxiliaryDatabaseObject( auxiliaryDatabaseObject );
-                }
-            }
-            if ( attributeConverterDefinitionsByClass != null ) {
-                for ( AttributeConverterDefinition attributeConverterDefinition : attributeConverterDefinitionsByClass.values() ) {
-                    metadataBuilder.applyAttributeConverter( attributeConverterDefinition );
-                }
-            }
+			MetadataSources metadataSources = getFieldValueFromParent(configuration, "metadataSources");
+			ImplicitNamingStrategy implicitNamingStrategy = getFieldValueFromParent(configuration, "implicitNamingStrategy");
+			PhysicalNamingStrategy physicalNamingStrategy = getFieldValueFromParent(configuration, "physicalNamingStrategy");
+			SharedCacheMode sharedCacheMode = getFieldValueFromParent(configuration, "sharedCacheMode");
+			List<TypeContributor> typeContributorRegistrations = getFieldValueFromParent(configuration, "typeContributorRegistrations");
+			List<BasicType> basicTypes = getFieldValueFromParent(configuration, "basicTypes");
+			//            Map<String, NamedSQLQueryDefinition> namedSqlQueries = getFieldValueFromParent( configuration, "namedSqlQueries" );
+			Map<String, SQLFunction> sqlFunctions = getFieldValueFromParent(configuration, "sqlFunctions");
+			List<AuxiliaryDatabaseObject> auxiliaryDatabaseObjectList = getFieldValueFromParent(configuration,
+					"auxiliaryDatabaseObjectList");
+			HashMap<Class, AttributeConverterDefinition> attributeConverterDefinitionsByClass = getFieldValueFromParent(configuration,
+					"attributeConverterDefinitionsByClass");
 
-            this.metadataImplementor = (MetadataImplementor)metadataBuilder.build();
-        }
+			final MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder((StandardServiceRegistry) serviceRegistry);
+			if (implicitNamingStrategy != null) {
+				metadataBuilder.applyImplicitNamingStrategy(implicitNamingStrategy);
+			}
+			if (physicalNamingStrategy != null) {
+				metadataBuilder.applyPhysicalNamingStrategy(physicalNamingStrategy);
+			}
+			if (sharedCacheMode != null) {
+				metadataBuilder.applySharedCacheMode(sharedCacheMode);
+			}
+			if (!typeContributorRegistrations.isEmpty()) {
+				for (TypeContributor typeContributor : typeContributorRegistrations) {
+					metadataBuilder.applyTypes(typeContributor);
+				}
+			}
+			if (!basicTypes.isEmpty()) {
+				for (BasicType basicType : basicTypes) {
+					metadataBuilder.applyBasicType(basicType);
+				}
+			}
+			if (sqlFunctions != null) {
+				for (Map.Entry<String, SQLFunction> entry : sqlFunctions.entrySet()) {
+					metadataBuilder.applySqlFunction(entry.getKey(), entry.getValue());
+				}
+			}
+			if (auxiliaryDatabaseObjectList != null) {
+				for (AuxiliaryDatabaseObject auxiliaryDatabaseObject : auxiliaryDatabaseObjectList) {
+					metadataBuilder.applyAuxiliaryDatabaseObject(auxiliaryDatabaseObject);
+				}
+			}
+			if (attributeConverterDefinitionsByClass != null) {
+				for (AttributeConverterDefinition attributeConverterDefinition : attributeConverterDefinitionsByClass.values()) {
+					metadataBuilder.applyAttributeConverter(attributeConverterDefinition);
+				}
+			}
 
-        Interceptor interceptor = getFieldValueFromParent( configuration, "interceptor" );
-        SessionFactoryObserver sessionFactoryObserver = getFieldValueFromParent( configuration, "sessionFactoryObserver" );
-        EntityNotFoundDelegate entityNotFoundDelegate = getFieldValueFromParent( configuration, "entityNotFoundDelegate" );
-        EntityTuplizerFactory entityTuplizerFactory = getFieldValueFromParent( configuration, "entityTuplizerFactory" );
 
-        final SessionFactoryBuilder sessionFactoryBuilder = metadataImplementor.getSessionFactoryBuilder();
-        if ( interceptor != null && interceptor != EmptyInterceptor.INSTANCE ) {
-            sessionFactoryBuilder.applyInterceptor( interceptor );
-        }
-        if ( sessionFactoryObserver != null ) {
-            sessionFactoryBuilder.addSessionFactoryObservers( sessionFactoryObserver );
-        }
-        if ( entityNotFoundDelegate != null ) {
-            sessionFactoryBuilder.applyEntityNotFoundDelegate( entityNotFoundDelegate );
-        }
-        if ( entityTuplizerFactory != null ) {
-            sessionFactoryBuilder.applyEntityTuplizerFactory( entityTuplizerFactory );
-        }
-        
-        return sessionFactoryBuilder.build();
-    }
+			this.metadataImplementor = (MetadataImplementor) metadataBuilder.build();
+		}
 
-    public Configuration getConfigurationProxy()
-    {
-        return configurationProxy;
-    }
+		Interceptor interceptor = getFieldValueFromParent(configuration, "interceptor");
+		SessionFactoryObserver sessionFactoryObserver = getFieldValueFromParent(configuration, "sessionFactoryObserver");
+		EntityNotFoundDelegate entityNotFoundDelegate = getFieldValueFromParent(configuration, "entityNotFoundDelegate");
+		EntityTuplizerFactory entityTuplizerFactory = getFieldValueFromParent(configuration, "entityTuplizerFactory");
 
-    public BootstrapServiceRegistry getBootstrapServiceRegistry()
-    {
-        return getFieldValueFromParent( configurationProxy, "bootstrapServiceRegistry" );
-    }
+		final SessionFactoryBuilder sessionFactoryBuilder = metadataImplementor.getSessionFactoryBuilder();
+		if (interceptor != null && interceptor != EmptyInterceptor.INSTANCE) {
+			sessionFactoryBuilder.applyInterceptor(interceptor);
+		}
+		if (sessionFactoryObserver != null) {
+			sessionFactoryBuilder.addSessionFactoryObservers(sessionFactoryObserver);
+		}
+		if (entityNotFoundDelegate != null) {
+			sessionFactoryBuilder.applyEntityNotFoundDelegate(entityNotFoundDelegate);
+		}
+		if (entityTuplizerFactory != null) {
+			sessionFactoryBuilder.applyEntityTuplizerFactory(entityTuplizerFactory);
+		}
 
-    public MetadataSources getMetadataSources()
-    {
-        return getFieldValueFromParent( configurationProxy, "metadataSources" );
-    }
+		return sessionFactoryBuilder.build();
+	}
 
-    public MetadataImplementor getMetadataImplementor()
-    {
-        return metadataImplementor;
-    }
+	public Configuration getConfigurationProxy() {
+		return configurationProxy;
+	}
 
-    private static <T> T getFieldValueFromParent(Object instance, String fieldName) {
-        try
-        {
-            Field field = instance.getClass().getSuperclass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+	public BootstrapServiceRegistry getBootstrapServiceRegistry() {
+		return getFieldValueFromParent(configurationProxy, "bootstrapServiceRegistry");
+	}
 
-            @SuppressWarnings( "unchecked" )
-            T fieldValue = (T)field.get(instance);
-            return fieldValue;
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
+	public MetadataSources getMetadataSources() {
+		return getFieldValueFromParent(configurationProxy, "metadataSources");
+	}
+
+	public MetadataImplementor getMetadataImplementor() {
+		return metadataImplementor;
+	}
+
+	private static <T> T getFieldValueFromParent(Object instance, String fieldName) {
+		try {
+			Field field = instance.getClass().getSuperclass().getDeclaredField(fieldName);
+			field.setAccessible(true);
+
+			@SuppressWarnings("unchecked")
+			T fieldValue = (T) field.get(instance);
+			return fieldValue;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
