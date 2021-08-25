@@ -22,14 +22,8 @@
 package org.jbpm.graph.node;
 
 import org.hibernate.LockMode;
-
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.db.AbstractDbTestCase;
-import org.jbpm.db.JbpmSchema;
 import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.persistence.db.DbPersistenceServiceFactory;
-import org.jbpm.svc.Services;
 
 /**
  * Verifies the join node can be persisted correctly.

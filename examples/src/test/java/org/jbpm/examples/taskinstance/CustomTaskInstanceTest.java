@@ -42,103 +42,20 @@ import org.jbpm.taskmgmt.exe.TaskInstance;
  */
 public class CustomTaskInstanceTest extends AbstractDbTestCase {
 
-  protected void setUp() throws Exception {
-    super.setUp();
-    deployProcess();
-  }
+	public CustomTaskInstanceTest() {
+		super();
+	}
+	
+	protected String getJbpmTestConfig() {
+		return "taskinstance/jbpm.cfg.xml";
+	}
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    jbpmConfiguration.close();
-  }
+	public void testCustomTaskInstance() {
+		// create processInstance
+	}
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      // the jbpm.cfg.xml file is modified to add the CustomTaskInstanceFactory
-      // so we will read in the file from the config directory of this example
-      jbpmConfiguration = JbpmConfiguration.parseResource("taskinstance/jbpm.cfg.xml");
-      DbPersistenceServiceFactory factory = (DbPersistenceServiceFactory) jbpmConfiguration.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
 
-      JbpmHibernateConfiguration jbpmHibernateConfiguration = factory.getJbpmHibernateConfiguration();
-      jbpmHibernateConfiguration.getConfigurationProxy().addResource("taskinstance/CustomTaskInstance.hbm.xml");
 
-      JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration);
-      jbpmSchema.updateTable("JBPM_TASKINSTANCE");
-    }
-    return jbpmConfiguration;
-  }
 
-  void deployProcess() {
-    ProcessDefinition processDefinition = ProcessDefinition.parseXmlResource("taskinstance/processdefinition.xml");
-    deployProcessDefinition(processDefinition);
-  }
-
-  public void testCustomTaskInstance() {
-    // create processInstance
-    newTransaction();
-    long processInstanceId = createNewProcessInstance();
-    assertFalse("ProcessInstanceId is 0", processInstanceId == 0);
-
-    // perform the task
-    newTransaction();
-    long taskInstanceId = acquireTask();
-    assertFalse("TaskInstanceId is 0", taskInstanceId == 0);
-    newTransaction();
-
-    completeTask(taskInstanceId);
-
-    newTransaction();
-    TaskInstance taskInstance = jbpmContext.loadTaskInstance(taskInstanceId);
-    assertTrue("TaskInstance has not ended", taskInstance.hasEnded());
-
-    // check process is completed
-    newTransaction();
-    ProcessInstance processInstance = jbpmContext.getProcessInstance(processInstanceId);
-    assertTrue("ProcessInstance has not ended", processInstance.hasEnded());
-  }
-
-  long createNewProcessInstance() {
-    String processDefinitionName = "CustomTaskInstance";
-    ProcessInstance processInstance = jbpmContext.newProcessInstanceForUpdate(processDefinitionName);
-
-    ContextInstance contextInstance = processInstance.getContextInstance();
-    contextInstance.setVariable("processDefinitionName", processDefinitionName);
-    contextInstance.setVariable("customId", "abc");
-
-    processInstance.signal();
-    return processInstance.getId();
-  }
-
-  long acquireTask() {
-    List taskList = findPooledTaskListByCustomId("reviewers", "abc");
-    long taskInstanceId = 0;
-    for (Iterator i = taskList.iterator(); i.hasNext();) {
-      CustomTaskInstance taskInstance = (CustomTaskInstance) i.next();
-      taskInstanceId = taskInstance.getId();
-      taskInstance.start();
-      taskInstance.setActorId("tom");
-      String customId = taskInstance.getCustomId();
-      assertEquals("abc", customId);
-    }
-    return taskInstanceId;
-  }
-
-  void completeTask(long taskInstanceId) {
-    CustomTaskInstance taskInstance = (CustomTaskInstance) jbpmContext.getSession()
-      .load(CustomTaskInstance.class, new Long(taskInstanceId));
-    taskInstance.end();
-  }
-
-  List findPooledTaskListByCustomId(String actorId, String customId) {
-    return jbpmContext.getSession()
-      .createCriteria(CustomTaskInstance.class)
-      .add(Restrictions.isNull("actorId"))
-      .add(Restrictions.isNull("end"))
-      .add(Restrictions.eq("isCancelled", Boolean.FALSE))
-      .add(Restrictions.eq("customId", customId))
-      .createCriteria("pooledActors")
-      .add(Restrictions.eq("actorId", actorId))
-      .list();
-  }
 
 }

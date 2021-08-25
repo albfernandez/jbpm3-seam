@@ -150,7 +150,7 @@ public class JpdlDbTest extends AbstractDbTestCase {
     assertFalse(taskNode.getCreateTasks());
     assertEquals(3, taskNode.getTasks().size());
 
-    Map tasks = new HashMap();
+    Map<String, Task> tasks = new HashMap<String, Task>();
     for (Iterator iter = taskNode.getTasks().iterator(); iter.hasNext();) {
       Task task = (Task) iter.next();
       tasks.put(task.getName(), task);

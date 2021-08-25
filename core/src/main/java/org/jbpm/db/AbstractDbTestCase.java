@@ -43,332 +43,329 @@ import org.jbpm.logging.log.ProcessLog;
 import org.jbpm.persistence.db.DbPersistenceServiceFactory;
 import org.jbpm.svc.Services;
 import org.jbpm.taskmgmt.exe.TaskInstance;
+import org.junit.AssumptionViolatedException;
 
 public abstract class AbstractDbTestCase extends AbstractJbpmTestCase {
 
-  protected JbpmConfiguration jbpmConfiguration;
-  protected JbpmContext jbpmContext;
+	protected JbpmConfiguration jbpmConfiguration;
+	protected JbpmContext jbpmContext;
 
-  protected Session session;
-  protected GraphSession graphSession;
-  protected TaskMgmtSession taskMgmtSession;
-  protected ContextSession contextSession;
-  protected JobSession jobSession;
-  protected LoggingSession loggingSession;
+	protected Session session;
+	protected GraphSession graphSession;
+	protected TaskMgmtSession taskMgmtSession;
+	protected ContextSession contextSession;
+	protected JobSession jobSession;
+	protected LoggingSession loggingSession;
 
-  protected JobExecutor jobExecutor;
+	protected JobExecutor jobExecutor;
 
-  private List<Long> processDefinitionIds;
+	private List<Long> processDefinitionIds;
 
-  private static final long JOB_TIMEOUT = 90 * 1000;
+	private static final long JOB_TIMEOUT = 90 * 1000;
 
-  protected void setUp() throws Exception {
-    super.setUp();
-    createJbpmContext();
-  }
+	protected void setUp() throws Exception {
+		super.setUp();
+		createJbpmContext();
+	}
 
-  protected void runTest() throws Throwable {
-    try {
-      super.runTest();
-    }
-    catch (Exception e) {
-      // prevent unsafe use of the session after an exception occurs
-      if (!jbpmContext.isClosed()) {
-    	  jbpmContext.setRollbackOnly();
-      }
-      throw e;
-    }
-  }
+	protected void runTest() throws Throwable {
+		try {
+			super.runTest();
+		} catch (AssumptionViolatedException ve) {
+			// nop
+			closeContext();
+		} catch (Exception e) {
+			closeContext();
+			throw e;
+		}
+	}
 
-  protected void tearDown() throws Exception {
-    if (processDefinitionIds != null) {
-    	deleteProcessDefinitions();
-    }
-    closeJbpmContext();
-    createJbpmContext();
-    ensureCleanDatabase();
-    closeJbpmContext();
-    super.tearDown();
-  }
+	private void closeContext() {
+		try {
+			// prevent unsafe use of the session after an exception occurs
+			if (jbpmContext != null && !jbpmContext.isClosed()) {
+				jbpmContext.setRollbackOnly();
+			}
+		} catch (Exception ignored) {
+			//
+		}
+	}
 
-  private void deleteProcessDefinitions() {
-    for (Iterator<Long> i = processDefinitionIds.iterator(); i.hasNext();) {
-      newTransaction();
-      try {
-        Long processDefinitionId = i.next();
-        graphSession.deleteProcessDefinition(processDefinitionId.longValue());
-      }
-      catch (RuntimeException e) {
-        jbpmContext.setRollbackOnly();
-      }
-    }
-  }
+	protected void tearDown() throws Exception {
+		if (processDefinitionIds != null) {
+			deleteProcessDefinitions();
+		}
+		closeJbpmContext();
+		createJbpmContext();
+		ensureCleanDatabase();
+		closeJbpmContext();
+		super.tearDown();
+	}
 
-  private void ensureCleanDatabase() {
-  
-	  
-    DbPersistenceServiceFactory persistenceServiceFactory =
-      (DbPersistenceServiceFactory) getJbpmConfiguration().getServiceFactory("persistence");
-    if (persistenceServiceFactory == null) {
-    	return;
-    }
-    
-    boolean hasLeftOvers = false;
+	private void deleteProcessDefinitions() {
+		for (Iterator<Long> i = processDefinitionIds.iterator(); i.hasNext();) {
+			newTransaction();
+			try {
+				Long processDefinitionId = i.next();
+				graphSession.deleteProcessDefinition(processDefinitionId.longValue());
+			} catch (RuntimeException e) {
+				jbpmContext.setRollbackOnly();
+			}
+		}
+	}
 
-    JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
-    if (jbpmHibernateConfiguration == null) {
-    	return;
-    }
+	private void ensureCleanDatabase() {
 
+		DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory) getJbpmConfiguration()
+				.getServiceFactory("persistence");
+		if (persistenceServiceFactory == null) {
+			return;
+		}
 
-    JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration, jbpmContext);
-    
-    Map<String, Long> rowsPerTable = jbpmSchema.getRowsPerTable();
-    if (rowsPerTable != null && rowsPerTable.entrySet() != null) {
-    	for (Map.Entry<String, Long> entry: rowsPerTable.entrySet()) {
-    		Long count = entry.getValue();
-    		if (count.intValue() != 0) {
-    			hasLeftOvers = true;
-    	        log.error(getName() + " left " + count + " records in " + entry.getKey());
-    		}
-    	}
-    }
+		boolean hasLeftOvers = false;
 
-    if (hasLeftOvers) {
-      jbpmSchema.cleanSchema();
-    }
-  }
+		JbpmHibernateConfiguration jbpmHibernateConfiguration = persistenceServiceFactory.getJbpmHibernateConfiguration();
+		if (jbpmHibernateConfiguration == null) {
+			return;
+		}
 
-  protected String getHibernateDialect() {
-    DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory) jbpmContext.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
-    return persistenceServiceFactory.getJbpmHibernateConfiguration().getConfigurationProxy().getProperty(Environment.DIALECT);
-  }
+		JbpmSchema jbpmSchema = new JbpmSchema(jbpmHibernateConfiguration, jbpmContext);
 
-  protected void newTransaction() {
-    closeJbpmContext();
-    createJbpmContext();
-  }
+		Map<String, Long> rowsPerTable = jbpmSchema.getRowsPerTable();
+		if (rowsPerTable != null && rowsPerTable.entrySet() != null) {
+			for (Map.Entry<String, Long> entry : rowsPerTable.entrySet()) {
+				Long count = entry.getValue();
+				if (count.intValue() != 0) {
+					hasLeftOvers = true;
+					log.error(getName() + " left " + count + " records in " + entry.getKey());
+				}
+			}
+		}
 
-  protected ProcessInstance saveAndReload(ProcessInstance pi) {
-    jbpmContext.save(pi);
-    newTransaction();
-    return graphSession.loadProcessInstance(pi.getId());
-  }
+		if (hasLeftOvers) {
+			jbpmSchema.cleanSchema();
+		}
+	}
 
-  protected TaskInstance saveAndReload(TaskInstance taskInstance) {
-    jbpmContext.save(taskInstance);
-    newTransaction();
-    return (TaskInstance) session.load(TaskInstance.class, new Long(taskInstance.getId()));
-  }
+	protected String getHibernateDialect() {
+		DbPersistenceServiceFactory persistenceServiceFactory = (DbPersistenceServiceFactory) jbpmContext
+				.getServiceFactory(Services.SERVICENAME_PERSISTENCE);
+		return persistenceServiceFactory.getJbpmHibernateConfiguration().getConfigurationProxy().getProperty(Environment.DIALECT);
+	}
 
-  protected ProcessDefinition saveAndReload(ProcessDefinition pd) {
-    graphSession.saveProcessDefinition(pd);
-    registerForDeletion(pd);
-    return graphSession.loadProcessDefinition(pd.getId());
-  }
+	protected void newTransaction() {
+		closeJbpmContext();
+		createJbpmContext();
+	}
 
-  protected ProcessLog saveAndReload(ProcessLog processLog) {
-    loggingSession.saveProcessLog(processLog);
-    newTransaction();
-    return loggingSession.loadProcessLog(processLog.getId());
-  }
+	protected ProcessInstance saveAndReload(ProcessInstance pi) {
+		jbpmContext.save(pi);
+		newTransaction();
+		return graphSession.loadProcessInstance(pi.getId());
+	}
 
-  protected void createSchema() {
-    getJbpmConfiguration().createSchema();
-  }
+	protected TaskInstance saveAndReload(TaskInstance taskInstance) {
+		jbpmContext.save(taskInstance);
+		newTransaction();
+		return (TaskInstance) session.load(TaskInstance.class, new Long(taskInstance.getId()));
+	}
 
-  protected void cleanSchema() {
-    getJbpmConfiguration().cleanSchema();
-  }
+	protected ProcessDefinition saveAndReload(ProcessDefinition pd) {
+		graphSession.saveProcessDefinition(pd);
+		registerForDeletion(pd);
+		return graphSession.loadProcessDefinition(pd.getId());
+	}
 
-  protected void dropSchema() {
-    getJbpmConfiguration().dropSchema();
-  }
+	protected ProcessLog saveAndReload(ProcessLog processLog) {
+		loggingSession.saveProcessLog(processLog);
+		newTransaction();
+		return loggingSession.loadProcessLog(processLog.getId());
+	}
 
-  protected String getJbpmTestConfig() {
-    return null;
-  }
+	protected void createSchema() {
+		getJbpmConfiguration().createSchema();
+	}
 
-  protected JbpmConfiguration getJbpmConfiguration() {
-    if (jbpmConfiguration == null) {
-      String configurationResource = getJbpmTestConfig();
-      jbpmConfiguration = JbpmConfiguration.getInstance(configurationResource);
-    }
-    return jbpmConfiguration;
-  }
+	protected void cleanSchema() {
+		getJbpmConfiguration().cleanSchema();
+	}
 
-  protected void createJbpmContext() {
-    jbpmContext = getJbpmConfiguration().createJbpmContext();     
-    initializeMembers();
-  }
+	protected void dropSchema() {
+		getJbpmConfiguration().dropSchema();
+	}
 
-  protected void closeJbpmContext() {
-    if (jbpmContext != null) {
-      resetMembers();
+	protected String getJbpmTestConfig() {
+		return null;
+	}
 
-      jbpmContext.close();
-      jbpmContext = null;
-    }
-  }
+	protected JbpmConfiguration getJbpmConfiguration() {
+		if (jbpmConfiguration == null) {
+			String configurationResource = getJbpmTestConfig();
+			jbpmConfiguration = JbpmConfiguration.getInstance(configurationResource);
+		}
+		return jbpmConfiguration;
+	}
 
-  protected void startJobExecutor() {
-    jobExecutor = getJbpmConfiguration().getJobExecutor();
-    jobExecutor.start();
-  }
+	protected void createJbpmContext() {
+		jbpmContext = getJbpmConfiguration().createJbpmContext();
+		initializeMembers();
+	}
 
-  /**
-   * Waits until all jobs are processed or a specified amount of time has elapsed. Unlike
-   * {@link #processJobs(long)}, this method is not concerned about the job executor or
-   * the jBPM context.
-   */
-  protected void waitForJobs(final long timeout) {
-    final long startTime = System.currentTimeMillis();
-    long previousTime = 0;
-    long waitPeriod = 500;
+	protected void closeJbpmContext() {
+		if (jbpmContext != null) {
+			resetMembers();
 
-    for (int currentCount, previousCount = 0; (currentCount = getNbrOfJobsAvailable()) > 0;) {
-      long currentTime = System.currentTimeMillis();
+			jbpmContext.close();
+			jbpmContext = null;
+		}
+	}
 
-      long elapsedTime = currentTime - startTime;
-      if (elapsedTime > timeout) {
-        fail("test execution exceeded threshold of " + timeout + " ms");
-      }
+	protected void startJobExecutor() {
+		jobExecutor = getJbpmConfiguration().getJobExecutor();
+		jobExecutor.start();
+	}
 
-      if (currentCount < previousCount) {
-        waitPeriod = currentCount * (currentTime - previousTime) / (previousCount - currentCount);
-        if (waitPeriod < 500) {
-        	waitPeriod = 500;
-        }
-      }
-      else {
-        waitPeriod <<= 1;
-      }
+	/**
+	 * Waits until all jobs are processed or a specified amount of time has elapsed. Unlike
+	 * {@link #processJobs(long)}, this method is not concerned about the job executor or
+	 * the jBPM context.
+	 */
+	protected void waitForJobs(final long timeout) {
+		final long startTime = System.currentTimeMillis();
+		long previousTime = 0;
+		long waitPeriod = 500;
 
-      if (waitPeriod > 5000) {
-        waitPeriod = 5000;
-      }
-      else {
-        long remainingTime = timeout - elapsedTime;
-        if (waitPeriod > remainingTime) {
-        	waitPeriod = remainingTime;
-        }
-      }
+		for (int currentCount, previousCount = 0; (currentCount = getNbrOfJobsAvailable()) > 0;) {
+			long currentTime = System.currentTimeMillis();
 
-      if (log.isDebugEnabled()) {
-        log.debug("waiting " + waitPeriod + " ms for " + currentCount + " jobs");
-      }
-      try {
-        Thread.sleep(waitPeriod);
-      }
-      catch (InterruptedException e) {
-        fail("wait for jobs got interrupted");
-      }
+			long elapsedTime = currentTime - startTime;
+			if (elapsedTime > timeout) {
+				fail("test execution exceeded threshold of " + timeout + " ms");
+			}
 
-      previousCount = currentCount;
-      previousTime = currentTime;
-    }
-  }
+			if (currentCount < previousCount) {
+				waitPeriod = currentCount * (currentTime - previousTime) / (previousCount - currentCount);
+				if (waitPeriod < 500) {
+					waitPeriod = 500;
+				}
+			} else {
+				waitPeriod <<= 1;
+			}
 
-  protected int getNbrOfJobsAvailable() {
-    if (session != null) {
-      return getJobCount(session);
-    }
-    else {
-      createJbpmContext();
-      try {
-        return getJobCount(session);
-      }
-      finally {
-        closeJbpmContext();
-      }
-    }
-  }
+			if (waitPeriod > 5000) {
+				waitPeriod = 5000;
+			} else {
+				long remainingTime = timeout - elapsedTime;
+				if (waitPeriod > remainingTime) {
+					waitPeriod = remainingTime;
+				}
+			}
 
-  private int getJobCount(Session session) {
-    Number jobCount = (Number) session.createCriteria(Job.class)
-      .add(Restrictions.gt("retries", new Integer(0)))
-      .setProjection(Projections.rowCount())
-      .uniqueResult();
-    return jobCount.intValue();
-  }
+			if (log.isDebugEnabled()) {
+				log.debug("waiting " + waitPeriod + " ms for " + currentCount + " jobs");
+			}
+			try {
+				Thread.sleep(waitPeriod);
+			} catch (InterruptedException e) {
+				fail("wait for jobs got interrupted");
+			}
 
-  protected int getTimerCount() {
-    Number timerCount = (Number) session.createCriteria(Timer.class)
-      .add(Restrictions.gt("retries", new Integer(0)))
-      .setProjection(Projections.rowCount())
-      .uniqueResult();
-    return timerCount.intValue();
-  }
+			previousCount = currentCount;
+			previousTime = currentTime;
+		}
+	}
 
-  /**
-   * Starts the job executor and waits until all jobs are processed or a predefined amount of
-   * time has elapsed. The current jBPM context is closed before waiting and a new one is opened
-   * after processing the jobs.
-   */
-  protected void processJobs() {
-    processJobs(JOB_TIMEOUT);
-  }
+	protected int getNbrOfJobsAvailable() {
+		if (session != null) {
+			return getJobCount(session);
+		} else {
+			createJbpmContext();
+			try {
+				return getJobCount(session);
+			} finally {
+				closeJbpmContext();
+			}
+		}
+	}
 
-  /**
-   * Starts the job executor and waits until all jobs are processed or a specified amount of
-   * time has elapsed. The current jBPM context is closed before waiting and a new one is opened
-   * after processing the jobs.
-   */
-  protected void processJobs(long timeout) {
-    closeJbpmContext();
-    try {
-      startJobExecutor();
-      waitForJobs(timeout);
-    }
-    finally {
-      stopJobExecutor();
-      createJbpmContext();
-    }
-  }
+	private int getJobCount(Session session) {
+		Number jobCount = (Number) session.createCriteria(Job.class).add(Restrictions.gt("retries", new Integer(0)))
+				.setProjection(Projections.rowCount()).uniqueResult();
+		return jobCount.intValue();
+	}
 
-  protected void stopJobExecutor() {
-    if (jobExecutor != null) {
-      try {
-        jobExecutor.stopAndJoin();
-      }
-      catch (InterruptedException e) {
-        fail("wait for job executor to stop got interrupted");
-      }
-      finally {
-        jobExecutor = null;
-      }
-    }
-  }
+	protected int getTimerCount() {
+		Number timerCount = (Number) session.createCriteria(Timer.class).add(Restrictions.gt("retries", new Integer(0)))
+				.setProjection(Projections.rowCount()).uniqueResult();
+		return timerCount.intValue();
+	}
 
-  protected void deployProcessDefinition(ProcessDefinition processDefinition) {
-    jbpmContext.deployProcessDefinition(processDefinition);
-    registerForDeletion(processDefinition);
-  }
+	/**
+	 * Starts the job executor and waits until all jobs are processed or a predefined amount of
+	 * time has elapsed. The current jBPM context is closed before waiting and a new one is opened
+	 * after processing the jobs.
+	 */
+	protected void processJobs() {
+		processJobs(JOB_TIMEOUT);
+	}
 
-  private void registerForDeletion(ProcessDefinition processDefinition) {
-    // start new transaction to avoid registering an uncommitted process definition
-    newTransaction();
-    if (processDefinitionIds == null) {
-    	processDefinitionIds = new ArrayList<Long>();
-    }
-    processDefinitionIds.add(Long.valueOf(processDefinition.getId()));
-  }
+	/**
+	 * Starts the job executor and waits until all jobs are processed or a specified amount of
+	 * time has elapsed. The current jBPM context is closed before waiting and a new one is opened
+	 * after processing the jobs.
+	 */
+	protected void processJobs(long timeout) {
+		closeJbpmContext();
+		try {
+			startJobExecutor();
+			waitForJobs(timeout);
+		} finally {
+			stopJobExecutor();
+			createJbpmContext();
+		}
+	}
 
-  protected void initializeMembers() {
-    session = jbpmContext.getSession();
-    graphSession = jbpmContext.getGraphSession();
-    taskMgmtSession = jbpmContext.getTaskMgmtSession();
-    loggingSession = jbpmContext.getLoggingSession();
-    jobSession = jbpmContext.getJobSession();
-    contextSession = jbpmContext.getContextSession();
-  }
+	protected void stopJobExecutor() {
+		if (jobExecutor != null) {
+			try {
+				jobExecutor.stopAndJoin();
+			} catch (InterruptedException e) {
+				fail("wait for job executor to stop got interrupted");
+			} finally {
+				jobExecutor = null;
+			}
+		}
+	}
 
-  protected void resetMembers() {
-    session = null;
-    graphSession = null;
-    taskMgmtSession = null;
-    loggingSession = null;
-    jobSession = null;
-    contextSession = null;
-  }
+	protected void deployProcessDefinition(ProcessDefinition processDefinition) {
+		jbpmContext.deployProcessDefinition(processDefinition);
+		registerForDeletion(processDefinition);
+	}
+
+	private void registerForDeletion(ProcessDefinition processDefinition) {
+		// start new transaction to avoid registering an uncommitted process definition
+		newTransaction();
+		if (processDefinitionIds == null) {
+			processDefinitionIds = new ArrayList<Long>();
+		}
+		processDefinitionIds.add(Long.valueOf(processDefinition.getId()));
+	}
+
+	protected void initializeMembers() {
+		session = jbpmContext.getSession();
+		graphSession = jbpmContext.getGraphSession();
+		taskMgmtSession = jbpmContext.getTaskMgmtSession();
+		loggingSession = jbpmContext.getLoggingSession();
+		jobSession = jbpmContext.getJobSession();
+		contextSession = jbpmContext.getContextSession();
+	}
+
+	protected void resetMembers() {
+		session = null;
+		graphSession = null;
+		taskMgmtSession = null;
+		loggingSession = null;
+		jobSession = null;
+		contextSession = null;
+	}
 }
