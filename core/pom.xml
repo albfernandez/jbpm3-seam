@@ -40,8 +40,8 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
+	    <groupId>org.dom4j</groupId>
+	    <artifactId>dom4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
