@@ -61,8 +61,8 @@
       <artifactId>desmoj</artifactId>
     </dependency>
     <dependency>
-      <groupId>jasperreports</groupId>
-      <artifactId>jasperreports</artifactId>
+	    <groupId>net.sf.jasperreports</groupId>
+	    <artifactId>jasperreports</artifactId>
     </dependency>
 
     <!-- Test Dependencies -->
