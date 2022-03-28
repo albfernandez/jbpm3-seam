@@ -16,7 +16,7 @@ JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ mvn clean package verify
 ```bash
 # change release in poms
 mvn clean package verify
-mvn clean package install deploy
+mvn -Psign clean package install deploy
 git add -A
 git commit -S -m 'Release <3.2.16>'
 git tag -a <v.3.2.16> -m "Tagging release <3.2.16>"
