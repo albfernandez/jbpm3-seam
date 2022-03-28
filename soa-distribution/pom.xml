@@ -19,7 +19,7 @@
   <parent>
     <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
-    <version>3.2.18-SNAPSHOT</version>
+    <version>3.2.18.ayg</version>
   </parent>
 
   <properties>
