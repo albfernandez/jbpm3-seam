@@ -79,7 +79,7 @@
 		<jsf.console.version>3.2.10-1-seam2_hibernate5-SNAPSHOT</jsf.console.version>
 
 		<!-- Needed for Seam2 compatibility -->
-		<version.drools>5.3.3.Final</version.drools>
+		<version.drools>7.60.0.Final</version.drools>
 		<!-- needed for drools 5.3.3 (do not use 2.2) -->
 		<version.mvel2>2.1.9.Final</version.mvel2>
 		<!-- Needed for drools 5.3.3 which is needed for seam2 -->
