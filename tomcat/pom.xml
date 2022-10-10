@@ -11,21 +11,16 @@
   </parent>
 
   <properties>
-    <tomcat.version>5.5.23</tomcat.version>
+    <tomcat.version>9.0.68</tomcat.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>catalina</artifactId>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-catalina</artifactId>
       <version>${tomcat.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>naming-factory</artifactId>
-      <version>${tomcat.version}</version>
-      <scope>provided</scope>
-    </dependency>
+
   </dependencies>
 </project>

@@ -33,7 +33,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.catalina.ServerFactory;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.RealmBase;
@@ -179,7 +178,7 @@ public class DataSourceRealm extends RealmBase {
     Connection dbConnection = open();
     if (dbConnection != null) {
       try {
-        return (new GenericPrincipal(this,
+        return (new GenericPrincipal(
           username,
           getPassword(dbConnection, username),
           getRoles(dbConnection, username)));
@@ -188,17 +187,17 @@ public class DataSourceRealm extends RealmBase {
         close(dbConnection);
       }
     }
-    return new GenericPrincipal(this, username, null, null);
+    return new GenericPrincipal(username, null, null);
   }
 
-  private List getRoles(Connection dbConnection, String username) {
+  private List<String> getRoles(Connection dbConnection, String username) {
     PreparedStatement statement = null;
     try {
       statement = dbConnection.prepareStatement(roleQuery);
       statement.setString(1, username);
 
       ResultSet rs = statement.executeQuery();
-      List roles = new ArrayList();
+      List<String> roles = new ArrayList<>();
       while (rs.next()) {
         roles.add(rs.getString(1));
       }
@@ -228,7 +227,7 @@ public class DataSourceRealm extends RealmBase {
         context = (Context) ContextBindings.getClassLoader().lookup("comp/env");
       }
       else {
-        StandardServer server = (StandardServer) ServerFactory.getServer();
+        StandardServer server = new StandardServer();
         context = server.getGlobalNamingContext();
       }
       DataSource dataSource = (DataSource) context.lookup(dataSourceName);
