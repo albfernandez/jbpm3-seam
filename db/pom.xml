@@ -18,7 +18,7 @@
   <parent>
     <groupId>com.github.albfernandez</groupId>
     <artifactId>jbpm</artifactId>
-    <version>3.2.19.ayg</version>
+    <version>3.2.20-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
