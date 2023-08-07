@@ -18,7 +18,7 @@
   <parent>
     <artifactId>jbpm-examples-dist</artifactId>
     <groupId>com.github.albfernandez</groupId>
-    <version>3.2.19-SNAPSHOT</version>
+    <version>3.2.19.ayg</version>
   </parent>
 
   <build>
