@@ -188,11 +188,11 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <property name="database" value="${database}"/>
                 <property name="project.output.dir" value="${project.build.outputDirectory}"/>
                 <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-config"/>
-              </tasks>
+              </target>
             </configuration>
           </execution>
 
@@ -203,11 +203,11 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <property name="project.output.dir" value="${project.build.outputDirectory}"/>
                 <property name="project.test.output.dir" value="${project.build.testOutputDirectory}"/>
                 <ant antfile="scripts/antrun-config.xml" target="gen-hibernate-test-config"/>
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>

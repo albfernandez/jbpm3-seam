@@ -104,14 +104,14 @@
             <id>SOA-P build process</id>
             <phase>package</phase>
             <configuration>
-              <tasks>
+              <target>
                 <ant antfile="build-common.xml" target="soa.routine.build" dir="${project.basedir}" inheritAll="false">
                   <property name="module_base_dir" value="${project.basedir}"/>
                   <property name="module_build_finalName" value="${project.build.finalName}"/>
                   <property name="project.version" value="${project.version}"/>
                   <property name="groovy.path" value="${maven.dependency.org.codehaus.groovy.groovy-all.jar.path}"/>
                 </ant>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
